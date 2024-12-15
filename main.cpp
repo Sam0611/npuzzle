@@ -1,11 +1,20 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
+#include <iostream>
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(200, 200), "N PUZZLE");
-    sf::CircleShape shape(100.f);
-    shape.setFillColor(sf::Color::Green);
+    // create window with size and title
+    sf::RenderWindow window(sf::VideoMode(1300, 900), "N PUZZLE");
+
+    // create rectangle with size
+    sf::RectangleShape rectangle(sf::Vector2f(800.f, 800.f));
+
+    // set rectangle color, position, and border
+    rectangle.setFillColor(sf::Color::White);
+    rectangle.setPosition(250.f, 50.f);
+    rectangle.setOutlineThickness(10.f);
+    rectangle.setOutlineColor(sf::Color(250, 150, 100));
 
     while (window.isOpen())
     {
@@ -17,7 +26,7 @@ int main()
         }
 
         window.clear(sf::Color::Red);
-        window.draw(shape);
+        window.draw(rectangle);
         window.display();
     }
 
