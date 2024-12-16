@@ -1,10 +1,32 @@
 
-SRC = main.cpp
+SRC = main.cpp Visualizer.cpp
 
-all:
-	c++ ${SRC} -lsfml-graphics -lsfml-window -lsfml-system
+OBJ	= ${SRC:.cpp=.o}
 
-fclean:
-	rm -f a.out
+NAME = visualizer
 
-re: fclean all
+CXX = c++
+
+CFLAGS = -std=c++98 -Wall -Werror -Wextra
+
+SFML_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
+
+RM = rm -rf
+
+%.o : %.cpp
+	${CXX} -c ${CFLAGS} -o $@ $<
+
+all:	${NAME}
+
+${NAME}:	${OBJ}
+	${CXX} ${CFLAGS} ${OBJ} -o ${NAME} ${SFML_FLAGS}
+
+clean:
+	${RM} ${OBJ}
+
+fclean:	clean
+	${RM} ${NAME}
+
+re: fclean ${NAME}
+
+.PHONY:	all clean fclean re
