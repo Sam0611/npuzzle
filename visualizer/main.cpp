@@ -36,12 +36,11 @@ int main()
     int size = 3;
     int screenWidth = 1300;
     int screenHeight = 900;
-    float squareSize = 100.f;
+    float squareSize = 99.f;
     float startX = (screenWidth - size * squareSize) / 2;
     float startY = (screenHeight - size * squareSize) / 2;
     
     std::vector<char> data;
-    data.push_back('9');
     data.push_back('2');
     data.push_back('3');
     data.push_back('1');
