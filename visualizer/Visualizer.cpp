@@ -43,6 +43,12 @@ sf::RectangleShape init_shape(float size)
 
 void Visualizer::init_window()
 {
+    if (_data.empty())
+    {
+        std::cerr << "Error: no data" << std::endl;
+        return ;
+    }
+
 	// create window
     sf::RenderWindow window(sf::VideoMode(_width, _height), _title);
 
@@ -102,8 +108,11 @@ void Visualizer::init_window()
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
             {
+                if (_indexZero % _puzzleSize == 0)
+                    continue ;
+
 				_indexZero--;
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 999; i++)
                 {
                     _blocks[_indexZero].move(0.1, 0);
                     _numbers[_indexZero].move(0.1, 0);
@@ -120,7 +129,10 @@ void Visualizer::init_window()
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
             {
-                for (int i = 0; i < 1000; i++)
+                if ((_indexZero + 1) % _puzzleSize == 0)
+                    continue ;
+
+                for (int i = 0; i < 999; i++)
                 {
                     _blocks[_indexZero].move(-0.1, 0);
                     _numbers[_indexZero].move(-0.1, 0);
@@ -138,8 +150,11 @@ void Visualizer::init_window()
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
             {
+                if (_indexZero < _puzzleSize)
+                    continue ;
+
 				_indexZero -= _puzzleSize;
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 999; i++)
                 {
                     _blocks[_indexZero].move(0, 0.1);
                     _numbers[_indexZero].move(0, 0.1);
@@ -162,8 +177,11 @@ void Visualizer::init_window()
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
             {
+                if (_indexZero >= _puzzleSize * _puzzleSize - _puzzleSize)
+                    continue ;
+
 				_indexZero += _puzzleSize - 1;
-                for (int i = 0; i < 1000; i++)
+                for (int i = 0; i < 999; i++)
                 {
                     _blocks[_indexZero].move(0, -0.1);
                     _numbers[_indexZero].move(0, -0.1);
@@ -186,7 +204,7 @@ void Visualizer::init_window()
             }
 		}
 
-        window.clear(sf::Color::Red);
+        window.clear(sf::Color(150, 150, 150));
         window.draw(rectangle);
         for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
         {
