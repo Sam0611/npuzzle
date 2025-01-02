@@ -14,70 +14,100 @@ static int  check_args_count(int argc)
     return (0);
 }
 
-static int  open_text_file(char **argv, std::ifstream &fs)
-{
-    fs.open(argv[1]);
-    if (!fs.good())
-    {
-        std::cerr << "Error while opening \"" << argv[1] << "\" file" << std::endl;
-        fs.close();
-        return (1);
-    }
-    return(0);
-}
 
-static int  text_file_is_empty(std::ifstream &fs, std::string &buffer)
+static int  npuzzle_size_is_invalid(std::ifstream &fs, std::string buffer, Npuzzle &npuzzle)
 {
-    //  check if text_file empty
-    if (buffer.empty())
-    {
-        std::cerr << "text file is empty" << std::endl;
-        fs.close();
+    int size = 0;
+    int i = 0;
+
+    if (err_npuzzle_size_syntax(fs, buffer, i))
         return(1);
+
+    //  take size
+    while (isdigit(buffer[i]))
+    {
+        size *= 10;
+        size += buffer[i] - 48;
+        if (err_size_to_big(fs, size))
+            return(1);
+        i++;
     }
+
+    if (err_npuzzle_size_syntax(fs, buffer, i))
+        return(1);
+
+    npuzzle.set_size(size);
     return(0);
 }
 
-static int  npuzzle_size_is_not_valid(std::ifstream &fs, std::string buffer, Npuzzle &npuzzle)
+static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzle &npuzzle)
 {
-    //  try convert string to int
-    try
+    int i = 0;
+
+    while (i < npuzzle.get_size())
     {
-        npuzzle.set_size(std::stoi(buffer));
-    }
-    catch (std::invalid_argument const &ex)
-    {
-        std::cerr << "Size of n_puzzle is not a number or is invalid" << std::endl;
-        fs.close();
-        return (1);
-    }
-    catch (std::out_of_range const &ex)
-    {
-        std::cerr << "Size of n_puzzle is out of range" << std::endl;
-        fs.close();
-        return (1);
+        getline(fs, buffer);
+        if (err_missing_map(fs, buffer))
+            return(1);
+
+        //  initializations
+        std::vector<t_piece>    initializion;
+        npuzzle._map.push_back(initializion);
+        int j = 0;
+        int k = 0;
+        while (isspace(buffer[k]))
+            k++;
+
+        while (j < npuzzle.get_size())
+        {
+            //  initialize piece
+            t_piece piece;
+            npuzzle._map[i].push_back(piece);
+            npuzzle._map[i][j].str = "";
+            npuzzle._map[i][j].nbr = 0;
+
+            //  add pieces to map
+            while (isdigit(buffer[k]))
+            {
+                (npuzzle._map[i][j].str) += buffer[k];
+                npuzzle._map[i][j].nbr *= 10;
+                npuzzle._map[i][j].nbr += buffer[k] - 48;
+                k++;
+
+                if (err_piece_to_big(fs, buffer, npuzzle.get_max_piece(), npuzzle._map[i][j].nbr))
+                    return(1);
+            }
+
+            if (err_piece_duplicate(fs, buffer, npuzzle, i, j, npuzzle._map[i][j].nbr))
+                return(1);
+
+            while (isspace(buffer[k]))
+                k++;
+
+            if (err_missing_piece(npuzzle, fs, i, j))
+                return(1);
+
+            if (err_wrong_syntax(fs, buffer, k))
+                return(1);
+            j++;
+        }
+
+        if (err_to_many_pieces(fs, buffer, k))
+            return(1);
+        i++;
     }
 
-    //  check if n-puzzle size to big or to low
-    if (npuzzle.get_size() < 2)
-    {
-        std::cerr << "N-puzzle size is to low" << std::endl;
-        fs.close();
-        return (1);
-    }
-    else if (npuzzle.get_size() > sqrt(INT_MAX) - 1)
-    {
-        std::cerr << "N-puzzle size is to big" << std::endl;
-        fs.close();
-        return (1);
-    }
+    getline(fs, buffer);
+    if (err_to_many_pieces(fs, buffer, 0))
+        return(1);
+
     return(0);
 }
 
 static int  npuzzle_parsing_text_file(char ** argv, Npuzzle &npuzzle)
 {
     std::ifstream   fs;
-    if (open_text_file(argv, fs))
+    if (err_open_text_file(argv, fs))
         return(1);
 
     std::string buffer;
@@ -87,14 +117,15 @@ static int  npuzzle_parsing_text_file(char ** argv, Npuzzle &npuzzle)
     while (fs.good() && buffer.size() && buffer[0] == '#')
         getline(fs, buffer);
     
-    if (text_file_is_empty(fs, buffer))
+    if (err_empty_line(fs, buffer))
         return(1);
 
-    if (npuzzle_size_is_not_valid(fs, buffer, npuzzle))
+    if (npuzzle_size_is_invalid(fs, buffer, npuzzle))
         return(1);
     
-    //  test debug
-    std::cout << "n-puzzle size is " << npuzzle.get_size() << std::endl;
+    if (npuzzle_map_is_invalid(fs, buffer, npuzzle))
+        return(1);
+
 
 
 
