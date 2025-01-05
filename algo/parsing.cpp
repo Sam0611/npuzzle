@@ -78,7 +78,7 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
                     return(1);
             }
 
-            if (err_piece_duplicate(fs, buffer, npuzzle, i, j, npuzzle._map[i][j].nbr))
+            if (err_piece_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j].nbr))
                 return(1);
 
             while (isspace(buffer[k]))

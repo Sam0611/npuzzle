@@ -67,14 +67,14 @@ int err_piece_to_big(std::ifstream &fs, std::string &buffer, int max_piece, int 
     return(0);
 }
 
-int err_piece_duplicate(std::ifstream &fs, std::string &buffer, Npuzzle &npuzzle, int i, int j, int piece)
+int err_piece_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int piece)
 {
     j--;
     while (j >= 0)
     {
         if (piece == npuzzle._map[i][j].nbr)
         {
-            std::cerr << "A piece number is duplicate in line :" << std::endl << "\"" << buffer << "\"" << std::endl;
+            std::cerr << "Number \"" << npuzzle._map[i][j].nbr << "\" is duplicate" << std::endl;
             fs.close();
             return(1);
         }
@@ -84,12 +84,12 @@ int err_piece_duplicate(std::ifstream &fs, std::string &buffer, Npuzzle &npuzzle
     i--;
     while (i >= 0)
     {
-        j = npuzzle.get_size();
+        j = npuzzle.get_size() - 1;
         while (j >= 0)
         {
             if (piece == npuzzle._map[i][j].nbr)
             {
-                std::cerr << "A piece number is duplicate in line :" << std::endl << "\"" << buffer << "\"" << std::endl;
+                std::cerr << "Number \"" << npuzzle._map[i][j].nbr << "\" is duplicate" << std::endl;
                 fs.close();
                 return(1);
             }
