@@ -8,7 +8,7 @@ static int  check_args_count(int argc)
         if (argc < 2) 
             std::cerr << "Not enough arguments" << std::endl;
         if (argc > 2) 
-            std::cerr << "To many arguments" << std::endl;
+            std::cerr << "Too many arguments" << std::endl;
         return (1);
     }
     return (0);
