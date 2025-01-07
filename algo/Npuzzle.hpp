@@ -10,12 +10,24 @@
 
 //  square root of INT_MAX troncated
 #define LIMIT_OF_PIECES 46340
+//  directions
+#define UP 1;
+#define DOWN 2;
+#define LEFT 3;
+#define RIGHT 4;
 
 typedef struct  s_piece
 {
     int         nbr;
     std::string str;
 }   t_piece;
+
+typedef struct  s_movement
+{
+    int                 value;
+    int                 direction;
+    s_movement   *previous;
+}   t_movement;
 
 class Npuzzle
 {
