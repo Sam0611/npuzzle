@@ -26,9 +26,14 @@ class Npuzzle
         void    set_size(int size);
         int     get_size(void);
         int     get_max_piece(void);
+
+        int     get_Manhattan_heuristic_value(void);
+
         std::vector< std::vector<t_piece> > _map;
 
     private:
+        void    set_coordinates(int to_check, int &x, int &y);
+
         int _size;
         int _max_piece;
     
@@ -38,7 +43,7 @@ class Npuzzle
 int    npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle);
 
 //  errors functions
-int  err_open_text_file(char **argv, std::ifstream &fs);
+int err_open_text_file(char **argv, std::ifstream &fs);
 int err_empty_line(std::ifstream &fs, std::string &buffer);
 int err_npuzzle_size_syntax(std::ifstream &fs, std::string &buffer, int i);
 int err_size_to_big(std::ifstream &fs, int size);
