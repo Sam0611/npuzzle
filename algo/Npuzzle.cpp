@@ -32,16 +32,23 @@ int Npuzzle::get_Manhattan_heuristic_value(void)
     int to_check = 0;
     int h_value = 0;
     int x, y;
-    for (int i = 0; i < _size; i++)
+    for (int i = 0; i < _size - 1; i++)
     {
         for (int j = 0; j < _size; j++)
         {
             to_check++;
-            if (to_check >= _max_piece)
-                return (h_value);
             set_coordinates(to_check, x, y);
-            h_value += abs(static_cast<int>(i) - x) + abs(static_cast<int>(j) - y);
+            h_value += abs(i - x) + abs(j - y);
         }
+    }
+
+    //  check last line without checking the blank piece
+    int i = _size - 1;
+    for (int j = 0; j < _size - 1; j++)
+    {
+        to_check++;
+        set_coordinates(to_check, x, y);
+        h_value += abs(i - x) + abs(j - y);
     }
     return (h_value);
 }
