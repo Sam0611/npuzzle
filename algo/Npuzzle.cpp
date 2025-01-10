@@ -9,9 +9,7 @@ Npuzzle::~Npuzzle()
 {
     //  delete all movements
     for (std::forward_list<t_movement*>::iterator it = all_movements.begin(); it != all_movements.end(); it++)
-    {
         delete (*it);
-    }
 }
 
 void    Npuzzle::set_size(int size)
@@ -31,7 +29,7 @@ int     Npuzzle::get_max_piece(void)
     return(_max_piece);
 }
 
-int    Npuzzle::get_map_hole(int &i, int &j)
+int    Npuzzle::get_map_blank(int &i, int &j)
 {
     i = 0;
 
@@ -65,7 +63,7 @@ int     Npuzzle::a_star_algorithm(void)
     beginning->value = 0;
     beginning->direction = BEGIN;
     beginning->cost = 0;
-    if (get_map_hole(beginning->blank.i, beginning->blank.j))
+    if (get_map_blank(beginning->blank.i, beginning->blank.j))
         return (1);
     beginning->map = _map;
 
@@ -112,7 +110,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
             return(1);
     }
 
-    //  lunch with the smaller value
+    //  launch with the smaller value
     return(a_star_algorithm_recusrsive(possibilities.front()));
 }
 
@@ -139,6 +137,9 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     //  check if npuzzle finished
     if (heuristic == 0)
     {
+        std::cout << "solution movements = " << std::endl;
+        print_solution_movement(movement);
+        std::cout << std::endl;
         std::cout << "npuzzle finish in : " << movement->cost << std::endl;
         return (1);
     }
@@ -172,6 +173,20 @@ void    Npuzzle::movement_assign_map_and_blank(t_movement *movement, t_movement 
     std::swap(movement->map[parent_movement->blank.i][parent_movement->blank.j].nbr, movement->map[movement->blank.i][movement->blank.j].nbr); 
 }
 
+void    Npuzzle::print_solution_movement(t_movement *movement)
+{
+    if (movement->previous)
+        print_solution_movement(movement->previous);
+
+    if (movement->direction == UP)
+        std::cout << "↑ ";
+    if (movement->direction == DOWN)
+        std::cout << "↓ ";
+    if (movement->direction == LEFT)
+        std::cout << "← ";
+    if (movement->direction == RIGHT)
+        std::cout << "→ ";
+}
 
 int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > map)
 {

@@ -61,10 +61,11 @@ class Npuzzle
 
     private:
         void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<t_piece> > map);
-        int     get_map_hole(int &i, int &j);
+        int     get_map_blank(int &i, int &j);
         int     a_star_algorithm_recusrsive(t_movement *movement);
         int     add_possibility(t_movement *parent_movement, int direction);
         void    movement_assign_map_and_blank(t_movement *movement, t_movement *parent_movement);
+        void    print_solution_movement(t_movement *movement);
 
 
 
