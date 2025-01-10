@@ -14,11 +14,25 @@ static int  check_args_count(int argc)
     return (0);
 }
 
+static void  skip_white_space(std::string &buffer, int &i)
+{
+    while (isspace(buffer[i]))
+        i++;
+}
+
+static int  is_comment(std::string buffer, int i)
+{
+    if (buffer[i] == '#')
+        return(1);
+    return(0);
+}
 
 static int  npuzzle_size_is_invalid(std::ifstream &fs, std::string buffer, Npuzzle &npuzzle)
 {
     int size = 0;
     int i = 0;
+
+    skip_white_space(buffer, i);
 
     if (err_npuzzle_size_syntax(fs, buffer, i))
         return(1);
@@ -33,10 +47,17 @@ static int  npuzzle_size_is_invalid(std::ifstream &fs, std::string buffer, Npuzz
         i++;
     }
 
+    if (err_npuzzle_size_invalid(fs, size))
+        return(1);
+    npuzzle.set_size(size);
+
+    skip_white_space(buffer, i);
+    if (is_comment(buffer, i))
+        return(0);
+
     if (err_npuzzle_size_syntax(fs, buffer, i))
         return(1);
 
-    npuzzle.set_size(size);
     return(0);
 }
 
@@ -55,8 +76,8 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
         npuzzle._map.push_back(initializion);
         int j = 0;
         int k = 0;
-        while (isspace(buffer[k]))
-            k++;
+
+        skip_white_space(buffer, k);
 
         while (j < npuzzle.get_size())
         {
@@ -78,27 +99,35 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
                     return(1);
             }
 
-            if (err_piece_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j].nbr))
-                return(1);
-
-            while (isspace(buffer[k]))
-                k++;
-
             if (err_missing_piece(npuzzle, fs, i, j))
                 return(1);
 
+            if (err_piece_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j].nbr))
+                return(1);
+
+            skip_white_space(buffer, k);
+
+            j++;
+
+            if (is_comment(buffer, k))
+                continue;
+
             if (err_wrong_syntax(fs, buffer, k))
                 return(1);
-            j++;
         }
+
+        i++;
+
+        if (is_comment(buffer, k))
+            continue;
 
         if (err_to_many_pieces(fs, buffer, k))
             return(1);
-        i++;
     }
 
     getline(fs, buffer);
-    if (err_to_many_pieces(fs, buffer, 0))
+
+    if (err_to_many_lines(fs))
         return(1);
 
     return(0);
