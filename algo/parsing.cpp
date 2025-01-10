@@ -155,19 +155,7 @@ static int  npuzzle_parsing_text_file(char ** argv, Npuzzle &npuzzle)
     if (npuzzle_map_is_invalid(fs, buffer, npuzzle))
         return(1);
 
-
-
-
-    //  print rest of document
-    while (getline(fs, buffer) && fs.good())
-        std::cout << buffer << std::endl;
-
-
-
-
-
     fs.close();
-    //  parsing good 👌
     return (0);
 }
 

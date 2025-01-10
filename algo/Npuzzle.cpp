@@ -137,7 +137,7 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     //  check if npuzzle finished
     if (heuristic == 0)
     {
-        std::cout << "solution movements = " << std::endl;
+        std::cout << "solution : ";
         print_solution_movement(movement);
         std::cout << std::endl;
         std::cout << "npuzzle finish in : " << movement->cost << std::endl;
