@@ -7,7 +7,11 @@ Npuzzle::Npuzzle()
 
 Npuzzle::~Npuzzle()
 {
-
+    //  delete all movements
+    for (std::forward_list<t_movement*>::iterator it = all_movements.begin(); it != all_movements.end(); it++)
+    {
+        delete (*it);
+    }
 }
 
 void    Npuzzle::set_size(int size)
@@ -125,19 +129,19 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     movement->value = heuristic + movement->cost;
 
 
-    //  check if npuzzle finished
-    if (heuristic == 0)
-    {
-        std::cout << "npuzzle finish in : " << movement->cost << std::endl;
-        return (1);
-    }
-
     //  add in lists
     std::list<t_movement*>::iterator it = possibilities.begin();
     while (it != possibilities.end() && movement->value > (*it)->value)
         it++;
     possibilities.insert(it, movement);
     all_movements.push_front(movement);
+
+    //  check if npuzzle finished
+    if (heuristic == 0)
+    {
+        std::cout << "npuzzle finish in : " << movement->cost << std::endl;
+        return (1);
+    }
 
     return(0);
 }
