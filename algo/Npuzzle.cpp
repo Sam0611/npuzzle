@@ -66,6 +66,7 @@ int     Npuzzle::a_star_algorithm(void)
     if (get_map_blank(beginning->blank.i, beginning->blank.j))
         return (1);
     beginning->map = _map;
+    beginning->previous = NULL;
 
     //  add in lists
     possibilities.push_front(beginning);
