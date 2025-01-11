@@ -77,8 +77,8 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
         //  initializations
         std::vector<t_piece>    initialization;
 
-        npuzzle._map[i].reserve(npuzzle.get_size());
         npuzzle._map.push_back(initialization);
+        npuzzle._map[i].reserve(npuzzle.get_size());
         int j = 0;
         int k = 0;
 
