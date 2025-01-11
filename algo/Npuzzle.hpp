@@ -10,6 +10,7 @@
 #include <list>
 #include <forward_list>
 #include <random>
+#include <new>
 #include <ctime> //for test purposes
 
 //  square root of INT_MAX troncated

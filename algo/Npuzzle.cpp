@@ -58,8 +58,17 @@ int     Npuzzle::a_star_algorithm(void)
     }
 
     //  initialize "movement" begining
-    t_movement  *beginning = new t_movement;
-
+    t_movement  *beginning;
+    try
+    {
+        beginning = new t_movement;
+    }
+    catch(const std::bad_alloc& ba)
+    {
+        std::cerr << "bad_alloc caught : " << ba.what() << std::endl;
+        return (1);
+    }
+    
     beginning->value = 0;
     beginning->direction = BEGIN;
     beginning->cost = 0;
@@ -118,7 +127,17 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
 int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
 {
     //  create new movement base on parent and direction
-    t_movement  *movement = new t_movement;
+    t_movement  *movement;
+    try
+    {
+        movement = new t_movement;
+    }
+    catch(const std::bad_alloc& ba)
+    {
+        std::cerr << "bad_alloc caught : " << ba.what() << std::endl;
+        return (1);
+    }
+
     movement->cost = parent_movement->cost + 1;
     movement->direction = direction;
     movement_assign_map_and_blank(movement, parent_movement);
