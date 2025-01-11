@@ -23,34 +23,31 @@ int err_empty_line(std::ifstream &fs, std::string &buffer)
     return(0);
 }
 
-int err_npuzzle_size_syntax(std::ifstream &fs, std::string &buffer, int i)
+int err_npuzzle_size_syntax(std::string &buffer, int i)
 {
     if (buffer[i] && !isdigit(buffer[i]))
     {
         std::cerr << "Npuzzle size syntax invalid" << std::endl;
-        fs.close();
         return(1);
     }
     return(0);
 }
 
-int err_size_to_big(std::ifstream &fs, int size)
+int err_size_to_big(int size)
 {
     if (size >= LIMIT_OF_PIECES)
     {
         std::cerr << "Npuzzle size to big" << std::endl;
-        fs.close();
         return(1);
     }
     return (0);
 }
 
-int err_npuzzle_size_invalid(std::ifstream &fs, int size)
+int err_npuzzle_size_invalid(int size)
 {
     if (size == 0)
     {
         std::cerr << "Npuzzle size can't be 0" << std::endl;
-        fs.close();
         return (1);
     }
     return (0);

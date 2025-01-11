@@ -9,6 +9,8 @@
 #include <vector>
 #include <list>
 #include <forward_list>
+#include <random>
+#include <ctime>
 
 //  square root of INT_MAX troncated
 #define LIMIT_OF_PIECES 46340
@@ -80,9 +82,9 @@ int    npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle);
 //  errors functions
 int err_open_text_file(char **argv, std::ifstream &fs);
 int err_empty_line(std::ifstream &fs, std::string &buffer);
-int err_npuzzle_size_syntax(std::ifstream &fs, std::string &buffer, int i);
-int err_size_to_big(std::ifstream &fs, int size);
-int err_npuzzle_size_invalid(std::ifstream &fs, int size);
+int err_npuzzle_size_syntax(std::string &buffer, int i);
+int err_size_to_big(int size);
+int err_npuzzle_size_invalid(int size);
 int err_missing_map(std::ifstream &fs, std::string &buffer);
 int err_piece_to_big(std::ifstream &fs, std::string &buffer, int max_piece, int piece);
 int err_piece_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int piece);

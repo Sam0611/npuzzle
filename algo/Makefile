@@ -7,7 +7,7 @@ NAME = npuzzle
 
 CXX = c++
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -g
 
 SFML_FLAGS =
 
