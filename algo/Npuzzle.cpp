@@ -29,6 +29,51 @@ int     Npuzzle::get_max_piece(void)
     return(_max_piece);
 }
 
+bool    Npuzzle::is_solvable(void)
+{
+    // get map numbers in one vector
+    std::vector<int> values;
+    for (int i = 0; i < _size; i++)
+    {
+        for (int j = 0; j < _size; j++)
+        {
+            values.push_back(_map[i][j].nbr);
+        }
+    }
+
+    // get number of inversions
+    // a pair of tiles (a, b) form an inversion if a appears before b but a > b
+    int inversions = 0;
+    for (std::vector<int>::size_type i = 0; i < values.size(); i++)
+    {
+        for (std::vector<int>::size_type j = i + 1; j < values.size(); j++)
+        {
+            if (values[j] != 0 && values[i] > values[j])
+                inversions++;
+        }
+    }
+
+    // if N is even, puzzle instance is solvable if
+    //  the blank is on odd row and number of inversions is odd
+    //  the blank is on even row and number of inversions is even
+    // if N is odd,then puzzle instance is solvable if number of inversions is odd in the input state
+    if (_size % 2 == 0) // N is even
+    {
+        int row, col;
+        get_map_blank(row, col);
+        if (row % 2 == 0 && inversions % 2 != 0)
+            return (true);
+        if (row % 2 != 0 && inversions % 2 == 0)
+            return (true);
+    }
+    else // N is odd
+    {
+        if (inversions % 2 != 0)
+            return (true);
+    }
+    return (false);
+}
+
 int    Npuzzle::get_map_blank(int &i, int &j)
 {
     i = 0;

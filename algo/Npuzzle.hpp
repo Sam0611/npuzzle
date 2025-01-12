@@ -54,6 +54,8 @@ class Npuzzle
         int     get_size(void);
         int     get_max_piece(void);
 
+        bool     is_solvable(void);
+
         int     a_star_algorithm(void);
 
         int     get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > map);
