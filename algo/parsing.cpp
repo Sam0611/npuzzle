@@ -65,9 +65,6 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
 {
     int i = 0;
 
-    //  reserve for optimization
-    npuzzle._map.reserve(npuzzle.get_size());
-
     while (i < npuzzle.get_size())
     {
         getline(fs, buffer);
@@ -78,7 +75,6 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
         std::vector<t_piece>    initialization;
 
         npuzzle._map.push_back(initialization);
-        npuzzle._map[i].reserve(npuzzle.get_size());
         int j = 0;
         int k = 0;
 
@@ -205,15 +201,11 @@ static void  npuzzle_generate_map(Npuzzle &npuzzle)
     int size = npuzzle.get_size();
     int nbr = 0;
 
-    //  reserve for optimization
-    npuzzle._map.reserve(size);
-
     //  create npuzzle map with default value
     for (int i = 0; i < size; i++)
     {
         std::vector<t_piece>    initialization;
         npuzzle._map.push_back(initialization);
-        npuzzle._map[i].resize(size);
         for (int j = 0; j < size; j++)
         {
             t_piece piece;
