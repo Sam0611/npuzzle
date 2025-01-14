@@ -68,7 +68,7 @@ bool    Npuzzle::is_solvable(void)
     }
     else // N is odd
     {
-        if (inversions % 2 != 0)
+        if (inversions % 2 == 0)
             return (true);
     }
     return (false);
