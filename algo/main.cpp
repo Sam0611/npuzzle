@@ -24,7 +24,5 @@ clock_t    start = std::clock();
         return (1);
     }
 std::clock_t    end = std::clock();
-std::cout << "start = " << start << std::endl;
-std::cout << "end = " << end << std::endl;
-std::cout << "end - start = " << end - start << std::endl;
+std::cout << "time : " << end - start << " ms" << std::endl;
 }
