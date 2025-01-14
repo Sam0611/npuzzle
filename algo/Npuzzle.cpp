@@ -134,32 +134,44 @@ int     Npuzzle::a_star_algorithm(void)
 
 int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
 {
+//test
+// auto it = possibilities.begin();
+// while (it != possibilities.end())
+// {
+//     std::cout << (*it)->value << " ";
+//     it++;
+// }
+// std::cout << std::endl;
+// std::cout << std::endl;
+// std::cout << std::endl;
+
+
     //remove front member before expanding
     possibilities.pop_front();
 
     //  can go UP
-    if (movement->blank.i > 0)
+    if (movement->direction != DOWN && movement->blank.i > 0)
     {
         if (add_possibility(movement, UP))
             return(1);
     }
 
     //  can go DOWN
-    if (movement->blank.i < _size - 1)
+    if (movement->direction != UP && movement->blank.i < _size - 1)
     {
         if (add_possibility(movement, DOWN))
             return (1);
     }
 
     //  can go LEFT
-    if (movement->blank.j > 0)
+    if (movement->direction != RIGHT && movement->blank.j > 0)
     {
         if (add_possibility(movement, LEFT))
             return(1);
     }
 
     //  can go RIGHT
-    if (movement->blank.j < _size - 1)
+    if (movement->direction != LEFT && movement->blank.j < _size - 1)
     {
         if (add_possibility(movement, RIGHT))
             return(1);
