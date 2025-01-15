@@ -206,7 +206,7 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
 
     //  add in lists
     std::list<t_movement*>::iterator it = possibilities.begin();
-    while (it != possibilities.end() && movement->value > (*it)->value)
+    while (it != possibilities.end() && (movement->value > (*it)->value || (movement->value == (*it)->value && movement->cost < (*it)->cost)))
         it++;
     possibilities.insert(it, movement);
     all_movements.push_front(movement);
