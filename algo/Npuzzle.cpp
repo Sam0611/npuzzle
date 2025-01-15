@@ -56,7 +56,7 @@ bool    Npuzzle::is_solvable(void)
     // if N is even, puzzle instance is solvable if
     //  the blank is on odd row and number of inversions is odd
     //  the blank is on even row and number of inversions is even
-    // if N is odd,then puzzle instance is solvable if number of inversions is odd in the input state
+    // if N is odd, then puzzle instance is solvable if number of inversions is even in the input state
     if (_size % 2 == 0) // N is even
     {
         int row, col;
@@ -152,6 +152,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
     //  can go UP
     if (movement->direction != DOWN && movement->blank.i > 0)
     {
+        std::cout << "U ";
         if (add_possibility(movement, UP))
             return(1);
     }
@@ -159,6 +160,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
     //  can go DOWN
     if (movement->direction != UP && movement->blank.i < _size - 1)
     {
+        std::cout << "D ";
         if (add_possibility(movement, DOWN))
             return (1);
     }
@@ -166,6 +168,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
     //  can go LEFT
     if (movement->direction != RIGHT && movement->blank.j > 0)
     {
+        std::cout << "L ";
         if (add_possibility(movement, LEFT))
             return(1);
     }
@@ -173,12 +176,20 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
     //  can go RIGHT
     if (movement->direction != LEFT && movement->blank.j < _size - 1)
     {
+        std::cout << "R ";
         if (add_possibility(movement, RIGHT))
             return(1);
     }
 
     //  launch with the smaller value
+    std::cout << std::endl;
     return(a_star_algorithm_recusrsive(possibilities.front()));
+    // std::string input;
+    // std::cin >> input;
+    // if (input == "c")
+    //     return(a_star_algorithm_recusrsive(possibilities.front()));
+    // else
+    //     return (0);
 }
 
 int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
