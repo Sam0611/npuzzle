@@ -1,45 +1,60 @@
 #include "Visualizer.hpp"
 #include <iostream>
 #include <vector>
+#include "Npuzzle.hpp"
 
-// void draw_puzzle_blocks(sf::RenderWindow window, std::vector<sf::RectangleShape> blocks, std::vector<sf::Text> numbers)
-// {
-//     for (std::vector<int>::size_type i = 0; i < blocks.size(); i++)
-//     {
-//         window.draw(blocks[i]);
-//         window.draw(numbers[i]);
-//     }
-// }
-
-// sf::Text init_text(sf::Font font, char c)
-// {
-//     sf::Text text;
-//     text.setFont(font);
-//     text.setCharacterSize(24);
-//     text.setString(c);
-//     text.setFillColor(sf::Color::Black);
-//     return (text);
-// }
-
-int main()
+int main(int ac, char **av)
 {
-    // get size from argv
-    int size = 3;
+    if (ac == 1)
+        return (1);
+
+    //  initialize puzzle class
+    Npuzzle npuzzle;
+
+    if (npuzzle_parsing(av, npuzzle))
+        return (1);
 
     std::vector<std::string> data;
-    data.push_back("2");
-    data.push_back("3");
-    data.push_back("1");
-    data.push_back("8");
-    data.push_back("4");
-    data.push_back("5");
-    data.push_back("0");
-    data.push_back("6");
-    data.push_back("7");
+    for (unsigned int i = 0; i < npuzzle._map.size(); i++)
+    {
+        for (unsigned int j = 0; j < npuzzle._map.size(); j++)
+        {
+            data.push_back(npuzzle._map[i][j].str);
+        }
+    }
 
-    Visualizer visualizer(1300, 900, "N-puzzle", size);
+    std::string tmp, instructions;
+    for (int i = 2; i < ac; i++)
+        tmp += av[i];
+
+    for (std::size_t i = 0; i + 2 < tmp.size(); i++)
+    {
+        if (int(tmp[i]) == -30 && int(tmp[i + 1]) == -122)
+        {
+            i += 2;
+            int x = int(tmp[i]);
+            switch (x)
+            {
+                case -109:
+                    instructions += "d";
+                    break ;
+                case -110:
+                    instructions += "r";
+                    break ;
+                case -111:
+                    instructions += "u";
+                    break ;
+                case -112:
+                    instructions += "l";
+                    break ;
+            }
+        }
+    }
+
+    Visualizer visualizer(1300, 900, "N-puzzle", npuzzle.get_size());
     visualizer.copy_vector(data);
+    visualizer.set_instructions(instructions);
     visualizer.init_window();
     
-    return 0;
+    return (0);
 }

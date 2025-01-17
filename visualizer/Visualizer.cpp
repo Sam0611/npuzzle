@@ -20,6 +20,14 @@ Visualizer &Visualizer::operator=(const Visualizer &visualizer)
 	this->_width = visualizer._width;
 	this->_height = visualizer._height;
 	this->_title = visualizer._title;
+    this->_puzzleSize = visualizer._puzzleSize;
+    this->_squareSize = visualizer._squareSize;
+    this->_squareBorder = visualizer._squareBorder;
+    this->_indexZero = visualizer._indexZero;
+    this->_blocks = visualizer._blocks;
+    this->_numbers = visualizer._numbers;
+    this->_data = visualizer._data;
+    this->_instructions = visualizer._instructions;
 	return (*this);
 }
 
@@ -30,6 +38,94 @@ Visualizer::~Visualizer()
 void Visualizer::copy_vector(std::vector<std::string> vec)
 {
 	_data = vec;
+}
+
+void Visualizer::set_instructions(std::string instructions)
+{
+    _instructions = instructions;
+}
+
+void Visualizer::draw_puzzle_blocks(sf::RenderWindow &window)
+{
+    for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
+    {
+        window.draw(_blocks[i]);
+        window.draw(_numbers[i]);
+    }
+    window.display();
+}
+
+void Visualizer::move_up(sf::RenderWindow &window, sf::RectangleShape rectangle)
+{
+    if (_indexZero < _puzzleSize)
+        return ;
+
+    _indexZero -= _puzzleSize;
+    for (int i = 0; i < 999; i++)
+    {
+        _blocks[_indexZero].move(0, 0.1);
+        _numbers[_indexZero].move(0, 0.1);
+        window.draw(rectangle);
+        draw_puzzle_blocks(window);
+    }
+    for (int i = 0; i < _puzzleSize - 1; i++)
+    {
+        std::iter_swap(_data.begin() + _indexZero + i, _data.begin() + _indexZero + 1 + i);
+        std::iter_swap(_blocks.begin() + _indexZero + i, _blocks.begin() + _indexZero + 1 + i);
+        std::iter_swap(_numbers.begin() + _indexZero + i, _numbers.begin() + _indexZero + 1 + i);
+    }
+}
+
+void Visualizer::move_down(sf::RenderWindow &window, sf::RectangleShape rectangle)
+{
+    if (_indexZero >= _puzzleSize * _puzzleSize - _puzzleSize)
+        return ;
+
+    _indexZero += _puzzleSize - 1;
+    for (int i = 0; i < 999; i++)
+    {
+        _blocks[_indexZero].move(0, -0.1);
+        _numbers[_indexZero].move(0, -0.1);
+        window.draw(rectangle);
+        draw_puzzle_blocks(window);
+    }
+    for (int i = 0; i < _puzzleSize - 1; i++)
+    {
+        std::iter_swap(_data.begin() + _indexZero - i, _data.begin() + _indexZero - 1 - i);
+        std::iter_swap(_blocks.begin() + _indexZero - i, _blocks.begin() + _indexZero - 1 - i);
+        std::iter_swap(_numbers.begin() + _indexZero - i, _numbers.begin() + _indexZero - 1 - i);
+    }
+    _indexZero++;
+}
+
+void Visualizer::move_left(sf::RenderWindow &window, sf::RectangleShape rectangle)
+{
+    if (_indexZero % _puzzleSize == 0)
+        return ;
+
+    _indexZero--;
+    for (int i = 0; i < 999; i++)
+    {
+        _blocks[_indexZero].move(0.1, 0);
+        _numbers[_indexZero].move(0.1, 0);
+        window.draw(rectangle);
+        draw_puzzle_blocks(window);
+    }
+}
+
+void Visualizer::move_right(sf::RenderWindow &window, sf::RectangleShape rectangle)
+{
+    if ((_indexZero + 1) % _puzzleSize == 0)
+        return ;
+
+    for (int i = 0; i < 999; i++)
+    {
+        _blocks[_indexZero].move(-0.1, 0);
+        _numbers[_indexZero].move(-0.1, 0);
+        window.draw(rectangle);
+        draw_puzzle_blocks(window);
+    }
+    _indexZero++;
 }
 
 sf::RectangleShape init_shape(float size)
@@ -106,111 +202,44 @@ void Visualizer::init_window()
 			if (event.type == sf::Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
 				window.close();
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) && !_instructions.empty())
             {
-                if (_indexZero % _puzzleSize == 0)
-                    continue ;
-
-				_indexZero--;
-                for (int i = 0; i < 999; i++)
+                for (std::size_t i = 0; i < _instructions.size(); i++)
                 {
-                    _blocks[_indexZero].move(0.1, 0);
-                    _numbers[_indexZero].move(0.1, 0);
-                    window.draw(rectangle);
-                    // draw_puzzle_blocks(window, blocks, numbers);
-                    for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
-                    {
-                        window.draw(_blocks[i]);
-                        window.draw(_numbers[i]);
-                    }
-                    window.display();
+                    if (_instructions[i] == 'l') // left
+                        move_left(window, rectangle);
+
+                    if (_instructions[i] == 'r') // right
+                        move_right(window, rectangle);
+
+                    if (_instructions[i] == 'u') // up
+                        move_up(window, rectangle);
+
+                    if (_instructions[i] == 'd') // down
+                        move_down(window, rectangle);
                 }
+                _instructions.clear();
+                continue ;
             }
+
+            if (!_instructions.empty())
+                continue ;
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+                move_left(window, rectangle);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-            {
-                if ((_indexZero + 1) % _puzzleSize == 0)
-                    continue ;
-
-                for (int i = 0; i < 999; i++)
-                {
-                    _blocks[_indexZero].move(-0.1, 0);
-                    _numbers[_indexZero].move(-0.1, 0);
-                    window.draw(rectangle);
-                    // draw_puzzle_blocks(window, blocks, numbers);
-                    for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
-                    {
-                        window.draw(_blocks[i]);
-                        window.draw(_numbers[i]);
-                    }
-                    window.display();
-                }
-				_indexZero++;
-            }
+                move_right(window, rectangle);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            {
-                if (_indexZero < _puzzleSize)
-                    continue ;
-
-				_indexZero -= _puzzleSize;
-                for (int i = 0; i < 999; i++)
-                {
-                    _blocks[_indexZero].move(0, 0.1);
-                    _numbers[_indexZero].move(0, 0.1);
-                    window.draw(rectangle);
-                    // draw_puzzle_blocks(window, blocks, numbers);
-                    for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
-                    {
-                        window.draw(_blocks[i]);
-                        window.draw(_numbers[i]);
-                    }
-                    window.display();
-                }
-				for (int i = 0; i < _puzzleSize - 1; i++)
-				{
-        			std::iter_swap(_data.begin() + _indexZero + i, _data.begin() + _indexZero + 1 + i);
-        			std::iter_swap(_blocks.begin() + _indexZero + i, _blocks.begin() + _indexZero + 1 + i);
-        			std::iter_swap(_numbers.begin() + _indexZero + i, _numbers.begin() + _indexZero + 1 + i);
-				}
-            }
+                move_up(window, rectangle);
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-            {
-                if (_indexZero >= _puzzleSize * _puzzleSize - _puzzleSize)
-                    continue ;
-
-				_indexZero += _puzzleSize - 1;
-                for (int i = 0; i < 999; i++)
-                {
-                    _blocks[_indexZero].move(0, -0.1);
-                    _numbers[_indexZero].move(0, -0.1);
-                    window.draw(rectangle);
-                    // draw_puzzle_blocks(window, blocks, numbers);
-                    for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
-                    {
-                        window.draw(_blocks[i]);
-                        window.draw(_numbers[i]);
-                    }
-                    window.display();
-                }
-				for (int i = 0; i < _puzzleSize - 1; i++)
-				{
-        			std::iter_swap(_data.begin() + _indexZero - i, _data.begin() + _indexZero - 1 - i);
-        			std::iter_swap(_blocks.begin() + _indexZero - i, _blocks.begin() + _indexZero - 1 - i);
-        			std::iter_swap(_numbers.begin() + _indexZero - i, _numbers.begin() + _indexZero - 1 - i);
-				}
-				_indexZero++;
-            }
+                move_down(window, rectangle);
 		}
 
         window.clear(sf::Color(150, 150, 150));
         window.draw(rectangle);
-        for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
-        {
-            window.draw(_blocks[i]);
-            window.draw(_numbers[i]);
-        }
-		window.display();
+        draw_puzzle_blocks(window);
 	}
 }

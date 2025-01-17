@@ -1,5 +1,5 @@
 
-SRC = main.cpp Visualizer.cpp
+SRC = main.cpp Visualizer.cpp parsing.cpp Npuzzle.cpp errors.cpp
 
 OBJ	= ${SRC:.cpp=.o}
 
@@ -7,7 +7,7 @@ NAME = visualizer
 
 CXX = c++
 
-CFLAGS = -std=c++98 -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra
 
 SFML_FLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 

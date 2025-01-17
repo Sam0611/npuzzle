@@ -16,6 +16,7 @@ class Visualizer
 		~Visualizer();
 		void init_window();
 		void copy_vector(std::vector<std::string> vec);
+		void set_instructions(std::string instructions);
 
 	private:
 		int _width;
@@ -24,10 +25,17 @@ class Visualizer
         int _puzzleSize;
 		float _squareSize;
 		float _squareBorder;
+		int _indexZero;
+		std::string _instructions;
 		std::vector<sf::RectangleShape> _blocks;
 		std::vector<sf::Text> _numbers;
 		std::vector<std::string> _data;
-		int _indexZero;
+
+		void draw_puzzle_blocks(sf::RenderWindow &window);
+		void move_up(sf::RenderWindow &window, sf::RectangleShape rectangle);
+		void move_down(sf::RenderWindow &window, sf::RectangleShape rectangle);
+		void move_left(sf::RenderWindow &window, sf::RectangleShape rectangle);
+		void move_right(sf::RenderWindow &window, sf::RectangleShape rectangle);
 };
 
 #endif
