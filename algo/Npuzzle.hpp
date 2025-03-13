@@ -59,6 +59,7 @@ class Npuzzle
         int     a_star_algorithm(void);
 
         int     get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > map);
+        int     get_Misplaced_tiles_value(std::vector< std::vector<t_piece> > map);
 
         std::vector< std::vector<t_piece> > _map;
         std::list<t_movement*>               possibilities;

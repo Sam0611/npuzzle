@@ -305,3 +305,21 @@ void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::ve
         }
     }
 }
+
+int Npuzzle::get_Misplaced_tiles_value(std::vector< std::vector<t_piece> > map)
+{
+    int h_value = 0;
+    int number = 1;
+    for (int i = 0; i < _size; i++)
+    {
+        for (int j = 0; j < _size; j++)
+        {
+            if (number != map[i][j].nbr && number != _size * _size)
+            {
+                h_value++;
+            }
+            number++;
+        }
+    }
+    return (h_value);
+}
