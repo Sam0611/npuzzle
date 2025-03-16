@@ -300,7 +300,7 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
     {
         for (int j = 0; j < _size; j++)
         {
-            if (map[i][j].nbr > map[i][j + 1])
+            if (map[i][j].nbr > map[i][j + 1].nbr)
                 conflicts++;
         }
     }
@@ -310,7 +310,7 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
     {
         for (int j = 0; j < _size; j++)
         {
-            if (map[j][i].nbr > map[j][i + 1])
+            if (map[j][i].nbr > map[j][i + 1].nbr)
                 conflicts++;
         }
     }

@@ -67,6 +67,7 @@ int main(int ac, char **av)
     Visualizer visualizer(1300, 900, "N-puzzle", npuzzle.get_size());
     visualizer.copy_vector(data);
     visualizer.set_instructions(instructions);
+    visualizer.set_speed(0.5);
     visualizer.init_window();
     
     return (0);

@@ -17,6 +17,7 @@ class Visualizer
 		void init_window();
 		void copy_vector(std::vector<std::string> vec);
 		void set_instructions(std::string instructions);
+		void set_speed(double speed);
 
 	private:
 		int _width;
@@ -26,6 +27,7 @@ class Visualizer
 		float _squareSize;
 		float _squareBorder;
 		int _indexZero;
+		double _speed;
 		std::string _instructions;
 		std::vector<sf::RectangleShape> _blocks;
 		std::vector<sf::Text> _numbers;

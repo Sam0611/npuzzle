@@ -9,8 +9,6 @@ CXX = c++
 
 CFLAGS = -Wall -Werror -Wextra -g
 
-SFML_FLAGS =
-
 RM = rm -rf
 
 %.o : %.cpp
@@ -19,7 +17,7 @@ RM = rm -rf
 all:	${NAME}
 
 ${NAME}:	${OBJ}
-	${CXX} ${CFLAGS} ${OBJ} -o ${NAME} ${SFML_FLAGS}
+	${CXX} ${CFLAGS} ${OBJ} -o ${NAME}
 
 clean:
 	${RM} ${OBJ}

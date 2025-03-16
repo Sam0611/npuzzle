@@ -2,11 +2,11 @@
 #include <iostream>
 #include <algorithm>
 
-Visualizer::Visualizer() : _width(500), _height(500), _title("N PUZZLE"), _puzzleSize(3), _squareSize(99.f), _squareBorder(1.f), _indexZero(0)
+Visualizer::Visualizer() : _width(500), _height(500), _title("N PUZZLE"), _puzzleSize(3), _squareSize(99.f), _squareBorder(1.f), _indexZero(0), _speed(0.1)
 {
 }
 
-Visualizer::Visualizer(int width, int height, std::string title, int puzzleSize) : _width(width), _height(height), _title(title), _puzzleSize(puzzleSize), _squareSize(99.f), _squareBorder(1.f), _indexZero(0)
+Visualizer::Visualizer(int width, int height, std::string title, int puzzleSize) : _width(width), _height(height), _title(title), _puzzleSize(puzzleSize), _squareSize(99.f), _squareBorder(1.f), _indexZero(0), _speed(0.1)
 {
 }
 
@@ -45,6 +45,11 @@ void Visualizer::set_instructions(std::string instructions)
     _instructions = instructions;
 }
 
+void Visualizer::set_speed(double speed)
+{
+    _speed = speed;
+}
+
 void Visualizer::draw_puzzle_blocks(sf::RenderWindow &window)
 {
     for (std::vector<int>::size_type i = 0; i < _blocks.size(); i++)
@@ -61,10 +66,10 @@ void Visualizer::move_up(sf::RenderWindow &window, sf::RectangleShape rectangle)
         return ;
 
     _indexZero -= _puzzleSize;
-    for (int i = 0; i < 999; i++)
+    for (int i = 0; i < 100 / _speed; i++)
     {
-        _blocks[_indexZero].move(0, 0.1);
-        _numbers[_indexZero].move(0, 0.1);
+        _blocks[_indexZero].move(0, _speed);
+        _numbers[_indexZero].move(0, _speed);
         window.draw(rectangle);
         draw_puzzle_blocks(window);
     }
@@ -82,10 +87,10 @@ void Visualizer::move_down(sf::RenderWindow &window, sf::RectangleShape rectangl
         return ;
 
     _indexZero += _puzzleSize - 1;
-    for (int i = 0; i < 999; i++)
+    for (int i = 0; i < 100 / _speed; i++)
     {
-        _blocks[_indexZero].move(0, -0.1);
-        _numbers[_indexZero].move(0, -0.1);
+        _blocks[_indexZero].move(0, -_speed);
+        _numbers[_indexZero].move(0, -_speed);
         window.draw(rectangle);
         draw_puzzle_blocks(window);
     }
@@ -104,10 +109,10 @@ void Visualizer::move_left(sf::RenderWindow &window, sf::RectangleShape rectangl
         return ;
 
     _indexZero--;
-    for (int i = 0; i < 999; i++)
+    for (int i = 0; i < 100 / _speed; i++)
     {
-        _blocks[_indexZero].move(0.1, 0);
-        _numbers[_indexZero].move(0.1, 0);
+        _blocks[_indexZero].move(_speed, 0);
+        _numbers[_indexZero].move(_speed, 0);
         window.draw(rectangle);
         draw_puzzle_blocks(window);
     }
@@ -118,10 +123,10 @@ void Visualizer::move_right(sf::RenderWindow &window, sf::RectangleShape rectang
     if ((_indexZero + 1) % _puzzleSize == 0)
         return ;
 
-    for (int i = 0; i < 999; i++)
+    for (int i = 0; i < 100 / _speed; i++)
     {
-        _blocks[_indexZero].move(-0.1, 0);
-        _numbers[_indexZero].move(-0.1, 0);
+        _blocks[_indexZero].move(-_speed, 0);
+        _numbers[_indexZero].move(-_speed, 0);
         window.draw(rectangle);
         draw_puzzle_blocks(window);
     }
