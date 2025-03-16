@@ -1,4 +1,5 @@
 #include "Npuzzle.hpp"
+#include <algorithm> // std::find
 
 Npuzzle::Npuzzle()
 {
@@ -291,28 +292,60 @@ int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > m
     return (h_value);
 }
 
-int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
+int count_conflicts(std::vector<int> goals, std::vector<int> values)
 {
     int conflicts = 0;
+    std::vector<int> to_check;
 
-    // get conflict for each row
-    for (int i = 0; i < _size; i++)
+    for (size_t i = 0; i < values.size(); i++)
     {
-        for (int j = 0; j < _size; j++)
+        if (std::find(goals.begin(), goals.end(), values[i]) != goals.end())
+            to_check.push_back(values[i]);
+    }
+
+    for (size_t i = 0; i < to_check.size(); i++)
+    {
+        for (size_t j = i + 1; j < to_check.size(); j++)
         {
-            if (map[i][j].nbr > map[i][j + 1].nbr)
+            if (to_check[i] > to_check[j])
                 conflicts++;
         }
     }
 
-    // get conflict for each column
+    return (conflicts);
+}
+
+int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
+{
+    int conflicts = 0;
+
+    std::vector<int> goals;
+    std::vector<int> values;
+
+    // get conflicts for each row
     for (int i = 0; i < _size; i++)
     {
         for (int j = 0; j < _size; j++)
         {
-            if (map[j][i].nbr > map[j][i + 1].nbr)
-                conflicts++;
+            values.push_back(map[i][j].nbr);
+            goals.push_back(_size * i + j + 1);
         }
+        conflicts += count_conflicts(goals, values);
+        values.clear();
+        goals.clear();
+    }
+
+    // get conflicts for each column
+    for (int i = 0; i < _size; i++)
+    {
+        for (int j = 0; j < _size; j++)
+        {
+            values.push_back(map[j][i].nbr);
+            goals.push_back(_size * j + i + 1);
+        }
+        conflicts += count_conflicts(goals, values);
+        values.clear();
+        goals.clear();
     }
 
     return (conflicts);

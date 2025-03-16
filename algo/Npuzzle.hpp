@@ -74,8 +74,6 @@ class Npuzzle
         void    movement_assign_map_and_blank(t_movement *movement, t_movement *parent_movement);
         void    print_solution_movement(t_movement *movement);
 
-
-
         int _size;
         int _max_piece;
     
