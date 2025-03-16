@@ -291,6 +291,33 @@ int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > m
     return (h_value);
 }
 
+int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
+{
+    int conflicts = 0;
+
+    // get conflict for each row
+    for (int i = 0; i < _size; i++)
+    {
+        for (int j = 0; j < _size; j++)
+        {
+            if (map[i][j].nbr > map[i][j + 1])
+                conflicts++;
+        }
+    }
+
+    // get conflict for each column
+    for (int i = 0; i < _size; i++)
+    {
+        for (int j = 0; j < _size; j++)
+        {
+            if (map[j][i].nbr > map[j][i + 1])
+                conflicts++;
+        }
+    }
+
+    return (conflicts);
+}
+
 void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<t_piece> > map)
 {
     for (int i = 0; i < _size; i++)

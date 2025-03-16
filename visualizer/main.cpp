@@ -21,7 +21,7 @@ int main(int ac, char **av)
     {
         for (unsigned int j = 0; j < npuzzle._map.size(); j++)
         {
-            data.push_back(npuzzle._map[i][j].str);
+            data.push_back(std::to_string(npuzzle._map[i][j].nbr));
         }
     }
 
