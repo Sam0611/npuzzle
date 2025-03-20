@@ -53,6 +53,8 @@ class Npuzzle
         void    set_size(int size);
         int     get_size(void);
         int     get_max_piece(void);
+        int     get_time_complexity(void);
+        void    incr_time_complexity(void);
 
         bool     is_solvable(void);
 
@@ -76,7 +78,7 @@ class Npuzzle
 
         int _size;
         int _max_piece;
-    
+        int _time_complexity;
 };
 
 //  parsing functions

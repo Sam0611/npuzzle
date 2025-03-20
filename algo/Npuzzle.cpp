@@ -1,9 +1,9 @@
 #include "Npuzzle.hpp"
 #include <algorithm> // std::find
 
-Npuzzle::Npuzzle()
+Npuzzle::Npuzzle() : _time_complexity(0)
 {
-
+    return;
 }
 
 Npuzzle::~Npuzzle()
@@ -28,6 +28,16 @@ int     Npuzzle::get_size(void)
 int     Npuzzle::get_max_piece(void)
 {
     return(_max_piece);
+}
+
+int     Npuzzle::get_time_complexity(void)
+{
+    return (_time_complexity);
+}
+
+void    Npuzzle::incr_time_complexity(void)
+{
+    _time_complexity++;
 }
 
 bool    Npuzzle::is_solvable(void)
@@ -149,6 +159,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
 
     //remove front member before expanding
     possibilities.pop_front();
+    incr_time_complexity();
 
     //  can go UP
     if (movement->direction != DOWN && movement->blank.i > 0)
@@ -215,6 +226,8 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     //  check if npuzzle finished
     if (heuristic == 0)
     {
+        std::cout << "complexity in time : " << get_time_complexity() << std::endl;
+        std::cout << "size : " << possibilities.size() << std::endl;
         std::cout << "solution : ";
         print_solution_movement(movement);
         std::cout << std::endl;
