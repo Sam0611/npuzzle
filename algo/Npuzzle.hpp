@@ -11,6 +11,7 @@
 #include <forward_list>
 #include <random>
 #include <new>
+#include <algorithm> // std::find
 #include <ctime> //for test purposes
 
 //  square root of INT_MAX troncated
@@ -74,6 +75,7 @@ class Npuzzle
         int     a_star_algorithm_recusrsive(t_movement *movement);
         int     add_possibility(t_movement *parent_movement, int direction);
         void    movement_assign_map_and_blank(t_movement *movement, t_movement *parent_movement);
+        int     finished(int heuristic, t_movement *movement);
         void    print_solution_movement(t_movement *movement);
 
         int _size;

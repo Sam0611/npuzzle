@@ -1,7 +1,6 @@
 #include "Npuzzle.hpp"
-#include <algorithm> // std::find
 
-Npuzzle::Npuzzle() : _time_complexity(0)
+Npuzzle::Npuzzle() : _time_complexity(1)
 {
     return;
 }
@@ -106,22 +105,15 @@ int    Npuzzle::get_map_blank(int &i, int &j)
 
 int     Npuzzle::a_star_algorithm(void)
 {
-    //  check if map already complete
-    if (get_Manhattan_heuristic_value(_map) == 0)
-    {
-        std::cout << "npuzzle finish in : 0" << std::endl;
-        return (0);
-    }
-
     //  initialize "movement" begining
     t_movement  *beginning;
     try
     {
         beginning = new t_movement;
     }
-    catch(const std::bad_alloc& ba)
+    catch(const std::bad_alloc& badd_alloc)
     {
-        std::cerr << "bad_alloc caught : " << ba.what() << std::endl;
+        std::cerr << "bad_alloc caught : " << badd_alloc.what() << std::endl;
         return (1);
     }
     
@@ -133,9 +125,15 @@ int     Npuzzle::a_star_algorithm(void)
     beginning->map = _map;
     beginning->previous = NULL;
 
+
     //  add in lists
     possibilities.push_front(beginning);
     all_movements.push_front(beginning);
+
+
+    //  check if map already complete
+    if (finished(get_Manhattan_heuristic_value(_map), beginning))
+        return(0);
 
 
     a_star_algorithm_recusrsive(beginning);
@@ -145,18 +143,6 @@ int     Npuzzle::a_star_algorithm(void)
 
 int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
 {
-//test
-// auto it = possibilities.begin();
-// while (it != possibilities.end())
-// {
-//     std::cout << (*it)->value << " ";
-//     it++;
-// }
-// std::cout << std::endl;
-// std::cout << std::endl;
-// std::cout << std::endl;
-
-
     //remove front member before expanding
     possibilities.pop_front();
     incr_time_complexity();
@@ -201,9 +187,9 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     {
         movement = new t_movement;
     }
-    catch(const std::bad_alloc& ba)
+    catch(const std::bad_alloc& bad_alloc)
     {
-        std::cerr << "bad_alloc caught : " << ba.what() << std::endl;
+        std::cerr << "bad_alloc caught : " << bad_alloc.what() << std::endl;
         return (1);
     }
 
@@ -224,16 +210,8 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     all_movements.push_front(movement);
 
     //  check if npuzzle finished
-    if (heuristic == 0)
-    {
-        std::cout << "complexity in time : " << get_time_complexity() << std::endl;
-        std::cout << "size : " << possibilities.size() << std::endl;
-        std::cout << "solution : ";
-        print_solution_movement(movement);
-        std::cout << std::endl;
-        std::cout << "npuzzle finish in : " << movement->cost << std::endl;
-        return (1);
-    }
+    if (finished(heuristic, movement))
+        return(1);
 
     return(0);
 }
@@ -262,6 +240,21 @@ void    Npuzzle::movement_assign_map_and_blank(t_movement *movement, t_movement 
     }
     movement->map = parent_movement->map;
     std::swap(movement->map[parent_movement->blank.i][parent_movement->blank.j].nbr, movement->map[movement->blank.i][movement->blank.j].nbr); 
+}
+
+int Npuzzle::finished(int heuristic, t_movement *movement)
+{
+    if (heuristic == 0)
+    {
+        std::cout << "complexity in time : " << get_time_complexity() << std::endl;
+        std::cout << "complexity in size : " << possibilities.size() << std::endl;
+        std::cout << "solution : ";
+        print_solution_movement(movement);
+        std::cout << std::endl;
+        std::cout << "npuzzle finish in : " << movement->cost << " moves" << std::endl;
+        return (1);
+    }
+    return(0);
 }
 
 void    Npuzzle::print_solution_movement(t_movement *movement)
