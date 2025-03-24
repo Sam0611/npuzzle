@@ -24,12 +24,6 @@
 #define LEFT 3
 #define RIGHT 4
 
-typedef struct  s_piece
-{
-    int         nbr;
-    std::string str;
-}   t_piece;
-
 typedef struct s_coor
 {
     int i;
@@ -42,7 +36,7 @@ typedef struct  s_movement
     int         direction;
     int         cost;
     t_coor      blank;
-    std::vector< std::vector<t_piece> > map;
+    std::vector< std::vector<int> > map;
     s_movement  *previous;
 }   t_movement;
 
@@ -60,26 +54,26 @@ class Npuzzle
         void    incr_time_complexity(void);
 
         //mains functions
-        int     a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<t_piece> >));
+        int     a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> >));
         bool    is_solvable(void);
 
         //heuristics functions
-        static int     get_Misplaced_tiles_value(std::vector< std::vector<t_piece> > map);
-        static int     get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > map);
+        static int     get_Misplaced_tiles_value(std::vector< std::vector<int> > map);
+        static int     get_Manhattan_heuristic_value(std::vector< std::vector<int> > map);
 
         //heuristic associates functions
-        static int     get_linear_conflicts_value(std::vector< std::vector<t_piece> > map);
-        static void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<t_piece> > map);
+        static int     get_linear_conflicts_value(std::vector< std::vector<int> > map);
+        static void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > map);
 
 
-        std::vector< std::vector<t_piece> > _map;
+        std::vector< std::vector<int> > _map;
         std::list<t_movement*>               possibilities;
         std::forward_list<t_movement*>       all_movements;
 
     private:
         int     get_map_blank(int &i, int &j);
-        int     a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<t_piece> >), t_movement *movement);
-        int     add_possibility(int (*heuristic_function)(std::vector< std::vector<t_piece> >), t_movement *parent_movement, int direction);
+        int     a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> >), t_movement *movement);
+        int     add_possibility(int (*heuristic_function)(std::vector< std::vector<int> >), t_movement *parent_movement, int direction);
         void    movement_assign_map_and_blank(t_movement *movement, t_movement *parent_movement);
         int     finished(int heuristic, t_movement *movement);
         void    print_solution_movement(t_movement *movement);

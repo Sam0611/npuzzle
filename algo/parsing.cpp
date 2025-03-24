@@ -72,7 +72,7 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
             return(1);
 
         //  initializations
-        std::vector<t_piece>    initialization;
+        std::vector<int>    initialization;
 
         npuzzle._map.push_back(initialization);
         int j = 0;
@@ -83,27 +83,23 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
         while (j < npuzzle.get_size())
         {
             //  initialize piece
-            t_piece piece;
-            npuzzle._map[i].push_back(piece);
-            npuzzle._map[i][j].str = "";
-            npuzzle._map[i][j].nbr = 0;
+            npuzzle._map[i].push_back(0);
 
             //  add pieces to map
             while (isdigit(buffer[k]))
             {
-                (npuzzle._map[i][j].str) += buffer[k];
-                npuzzle._map[i][j].nbr *= 10;
-                npuzzle._map[i][j].nbr += buffer[k] - 48;
+                npuzzle._map[i][j] *= 10;
+                npuzzle._map[i][j] += buffer[k] - 48;
                 k++;
 
-                if (err_piece_to_big(fs, buffer, npuzzle.get_max_piece(), npuzzle._map[i][j].nbr))
+                if (err_piece_to_big(fs, buffer, npuzzle.get_max_piece(), npuzzle._map[i][j]))
                     return(1);
             }
 
-            if (err_missing_piece(npuzzle, fs, i, j))
-                return(1);
+            // if (err_missing_piece(npuzzle, fs, i, j))
+            //     return(1);
 
-            if (err_piece_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j].nbr))
+            if (err_piece_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j]))
                 return(1);
 
             skip_white_space(buffer, k);
@@ -188,9 +184,9 @@ static void  shuffle_fisher_yates_algorithm(Npuzzle &npuzzle, int size)
             if (random == n)
                 continue;
 
-            temp = npuzzle._map[i][j].nbr;
-            npuzzle._map[i][j].nbr = npuzzle._map[random / size][random % size].nbr;
-            npuzzle._map[random / size][random % size].nbr = temp;
+            temp = npuzzle._map[i][j];
+            npuzzle._map[i][j] = npuzzle._map[random / size][random % size];
+            npuzzle._map[random / size][random % size] = temp;
             n--;
         }
     }
@@ -204,25 +200,16 @@ static void  npuzzle_generate_map(Npuzzle &npuzzle)
     //  create npuzzle map with default value
     for (int i = 0; i < size; i++)
     {
-        std::vector<t_piece>    initialization;
+        std::vector<int>    initialization;
         npuzzle._map.push_back(initialization);
         for (int j = 0; j < size; j++)
         {
-            t_piece piece;
-            npuzzle._map[i].push_back(piece);
-            npuzzle._map[i][j].nbr = nbr;
+            npuzzle._map[i].push_back(0);
             nbr++;
         }
     }
 
     shuffle_fisher_yates_algorithm(npuzzle, size);
-
-    //  put str in npuzzle map
-    for (int i = 0; i < size; i++)
-    {
-        for (int j = 0; j < size; j++)
-            npuzzle._map[i][j].str = std::to_string(npuzzle._map[i][j].nbr);
-    }
 }
 
 int    npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle)

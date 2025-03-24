@@ -80,9 +80,9 @@ int err_piece_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int p
     j--;
     while (j >= 0)
     {
-        if (piece == npuzzle._map[i][j].nbr)
+        if (piece == npuzzle._map[i][j])
         {
-            std::cerr << "Number \"" << npuzzle._map[i][j].nbr << "\" is duplicate" << std::endl;
+            std::cerr << "Number \"" << npuzzle._map[i][j] << "\" is duplicate" << std::endl;
             fs.close();
             return(1);
         }
@@ -95,9 +95,9 @@ int err_piece_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int p
         j = npuzzle.get_size() - 1;
         while (j >= 0)
         {
-            if (piece == npuzzle._map[i][j].nbr)
+            if (piece == npuzzle._map[i][j])
             {
-                std::cerr << "Number \"" << npuzzle._map[i][j].nbr << "\" is duplicate" << std::endl;
+                std::cerr << "Number \"" << npuzzle._map[i][j] << "\" is duplicate" << std::endl;
                 fs.close();
                 return(1);
             }
@@ -108,16 +108,16 @@ int err_piece_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int p
     return(0);
 }
 
-int err_missing_piece(Npuzzle &npuzzle, std::ifstream &fs, int i, int j)
-{
-    if (npuzzle._map[i][j].str.empty())
-    {
-        std::cerr << "Missing piece on map" << std::endl;
-        fs.close();
-        return (1);
-    }
-    return(0);
-}
+// int err_missing_piece(Npuzzle &npuzzle, std::ifstream &fs, int i, int j)
+// {
+//     if (npuzzle._map[i][j].str.empty())
+//     {
+//         std::cerr << "Missing piece on map" << std::endl;
+//         fs.close();
+//         return (1);
+//     }
+//     return(0);
+// }
 
 int err_wrong_syntax(std::ifstream &fs, std::string &buffer, int k)
 {
