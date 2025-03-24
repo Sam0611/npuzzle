@@ -13,6 +13,7 @@
 #include <new>
 #include <algorithm> // std::find
 #include <ctime> //for test purposes
+#include <functional> //to pass function as parameter
 
 //  square root of INT_MAX troncated
 #define LIMIT_OF_PIECES 46340
@@ -51,29 +52,34 @@ class Npuzzle
         Npuzzle();
         ~Npuzzle();
 
+        //  accessors functions
         void    set_size(int size);
         int     get_size(void);
         int     get_max_piece(void);
         int     get_time_complexity(void);
         void    incr_time_complexity(void);
 
-        bool     is_solvable(void);
+        //mains functions
+        int     a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<t_piece> >));
+        bool    is_solvable(void);
 
-        int     a_star_algorithm(void);
+        //heuristics functions
+        static int     get_Misplaced_tiles_value(std::vector< std::vector<t_piece> > map);
+        static int     get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > map);
 
-        int     get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > map);
-        int     get_linear_conflicts_value(std::vector< std::vector<t_piece> > map);
-        int     get_Misplaced_tiles_value(std::vector< std::vector<t_piece> > map);
+        //heuristic associates functions
+        static int     get_linear_conflicts_value(std::vector< std::vector<t_piece> > map);
+        static void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<t_piece> > map);
+
 
         std::vector< std::vector<t_piece> > _map;
         std::list<t_movement*>               possibilities;
         std::forward_list<t_movement*>       all_movements;
 
     private:
-        void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<t_piece> > map);
         int     get_map_blank(int &i, int &j);
-        int     a_star_algorithm_recusrsive(t_movement *movement);
-        int     add_possibility(t_movement *parent_movement, int direction);
+        int     a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<t_piece> >), t_movement *movement);
+        int     add_possibility(int (*heuristic_function)(std::vector< std::vector<t_piece> >), t_movement *parent_movement, int direction);
         void    movement_assign_map_and_blank(t_movement *movement, t_movement *parent_movement);
         int     finished(int heuristic, t_movement *movement);
         void    print_solution_movement(t_movement *movement);

@@ -1,6 +1,6 @@
 #include "Npuzzle.hpp"
 
-Npuzzle::Npuzzle() : _time_complexity(1)
+Npuzzle::Npuzzle() : _time_complexity(0)
 {
     return;
 }
@@ -103,7 +103,7 @@ int    Npuzzle::get_map_blank(int &i, int &j)
     return(1);
 }
 
-int     Npuzzle::a_star_algorithm(void)
+int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<t_piece> >))
 {
     //  initialize "movement" begining
     t_movement  *beginning;
@@ -132,16 +132,15 @@ int     Npuzzle::a_star_algorithm(void)
 
 
     //  check if map already complete
-    if (finished(get_Manhattan_heuristic_value(_map), beginning))
+    if (finished(heuristic_function(_map), beginning))
         return(0);
 
-
-    a_star_algorithm_recusrsive(beginning);
+    a_star_algorithm_recusrsive(heuristic_function, beginning);
 
     return (0);
 }
 
-int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
+int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<t_piece> >), t_movement *movement)
 {
     //remove front member before expanding
     possibilities.pop_front();
@@ -150,36 +149,36 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
     //  can go UP
     if (movement->direction != DOWN && movement->blank.i > 0)
     {
-        if (add_possibility(movement, UP))
+        if (add_possibility(heuristic_function, movement, UP))
             return(1);
     }
 
     //  can go DOWN
     if (movement->direction != UP && movement->blank.i < _size - 1)
     {
-        if (add_possibility(movement, DOWN))
+        if (add_possibility(heuristic_function, movement, DOWN))
             return (1);
     }
 
     //  can go LEFT
     if (movement->direction != RIGHT && movement->blank.j > 0)
     {
-        if (add_possibility(movement, LEFT))
+        if (add_possibility(heuristic_function, movement, LEFT))
             return(1);
     }
 
     //  can go RIGHT
     if (movement->direction != LEFT && movement->blank.j < _size - 1)
     {
-        if (add_possibility(movement, RIGHT))
+        if (add_possibility(heuristic_function, movement, RIGHT))
             return(1);
     }
 
     //  launch with the smaller value
-    return(a_star_algorithm_recusrsive(possibilities.front()));
+    return(a_star_algorithm_recusrsive(heuristic_function, possibilities.front()));
 }
 
-int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
+int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vector<t_piece> >), t_movement *parent_movement, int direction)
 {
     //  create new movement base on parent and direction
     t_movement  *movement;
@@ -198,7 +197,7 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     movement_assign_map_and_blank(movement, parent_movement);
     movement->previous = parent_movement;
 
-    int heuristic = get_Manhattan_heuristic_value(movement->map);
+    int heuristic = heuristic_function(movement->map);
     movement->value = heuristic + movement->cost;
 
 
@@ -277,9 +276,10 @@ int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > m
     int to_check = 0;
     int h_value = 0;
     int x, y;
-    for (int i = 0; i < _size - 1; i++)
+    int size = static_cast<int>(map.size());
+    for (int i = 0; i < size - 1; i++)
     {
-        for (int j = 0; j < _size; j++)
+        for (int j = 0; j < size; j++)
         {
             to_check++;
             set_coordinates(to_check, x, y, map);
@@ -288,8 +288,8 @@ int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<t_piece> > m
     }
 
     //  check last line without checking the blank piece
-    int i = _size - 1;
-    for (int j = 0; j < _size - 1; j++)
+    int i = size - 1;
+    for (int j = 0; j < size - 1; j++)
     {
         to_check++;
         set_coordinates(to_check, x, y, map);
@@ -324,17 +324,18 @@ int count_conflicts(std::vector<int> goals, std::vector<int> values)
 int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
 {
     int conflicts = 0;
+    int size = static_cast<int>(map.size());
 
     std::vector<int> goals;
     std::vector<int> values;
 
     // get conflicts for each row
-    for (int i = 0; i < _size; i++)
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < _size; j++)
+        for (int j = 0; j < size; j++)
         {
             values.push_back(map[i][j].nbr);
-            goals.push_back(_size * i + j + 1);
+            goals.push_back(size * i + j + 1);
         }
         conflicts += count_conflicts(goals, values);
         values.clear();
@@ -342,12 +343,12 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
     }
 
     // get conflicts for each column
-    for (int i = 0; i < _size; i++)
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < _size; j++)
+        for (int j = 0; j < size; j++)
         {
             values.push_back(map[j][i].nbr);
-            goals.push_back(_size * j + i + 1);
+            goals.push_back(size * j + i + 1);
         }
         conflicts += count_conflicts(goals, values);
         values.clear();
@@ -359,9 +360,10 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<t_piece> > map)
 
 void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<t_piece> > map)
 {
-    for (int i = 0; i < _size; i++)
+    int size = static_cast<int>(map.size());
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < _size; j++)
+        for (int j = 0; j < size; j++)
         {
             if (to_check == map[i][j].nbr)
             {
@@ -376,11 +378,12 @@ int Npuzzle::get_Misplaced_tiles_value(std::vector< std::vector<t_piece> > map)
 {
     int h_value = 0;
     int number = 1;
-    for (int i = 0; i < _size; i++)
+    int size = static_cast<int>(map.size());
+    for (int i = 0; i < size; i++)
     {
-        for (int j = 0; j < _size; j++)
+        for (int j = 0; j < size; j++)
         {
-            if (number != map[i][j].nbr && number != _size * _size)
+            if (number != map[i][j].nbr && number != size * size)
             {
                 h_value++;
             }

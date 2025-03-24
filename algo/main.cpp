@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     //  test a star algo
 clock_t    start = std::clock();
-    if (npuzzle.a_star_algorithm())
+    if (npuzzle.a_star_algorithm(&npuzzle.get_Manhattan_heuristic_value))
     {
         std::cerr << "ERR a_star probleme" << std::endl;
         return (1);
