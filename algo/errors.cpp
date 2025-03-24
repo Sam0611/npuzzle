@@ -66,23 +66,29 @@ int err_missing_map(std::ifstream &fs, std::string &buffer)
 
 int err_piece_to_big(std::ifstream &fs, std::string &buffer, int max_piece, int piece)
 {
+    (void) buffer;
     if (piece > max_piece)
     {
-        std::cerr << "A piece number exceed the maximum in line :" << std::endl << "\"" << buffer << "\"" << std::endl;
+        std::cerr << "Piece " << piece << " is to big" << std::endl;
         fs.close();
         return(1);
     }
     return(0);
 }
 
-int err_piece_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int piece)
+int err_piece_missing_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int piece)
 {
     j--;
     while (j >= 0)
     {
         if (piece == npuzzle._map[i][j])
         {
-            std::cerr << "Number \"" << npuzzle._map[i][j] << "\" is duplicate" << std::endl;
+            // detemine if a piece is missing or is duplicate
+            if (npuzzle._map[i][j] == 0)
+                std::cerr << "Piece missing" << std::endl;
+            else
+                std::cerr << "Number \"" << npuzzle._map[i][j] << "\" is duplicate" << std::endl;
+
             fs.close();
             return(1);
         }
@@ -97,7 +103,10 @@ int err_piece_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int j, int p
         {
             if (piece == npuzzle._map[i][j])
             {
-                std::cerr << "Number \"" << npuzzle._map[i][j] << "\" is duplicate" << std::endl;
+                if (npuzzle._map[i][j] == 0)
+                    std::cerr << "Piece missing" << std::endl;
+                else
+                    std::cerr << "Number \"" << npuzzle._map[i][j] << "\" is duplicate" << std::endl;
                 fs.close();
                 return(1);
             }

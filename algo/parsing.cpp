@@ -99,7 +99,7 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
             // if (err_missing_piece(npuzzle, fs, i, j))
             //     return(1);
 
-            if (err_piece_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j]))
+            if (err_piece_missing_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j]))
                 return(1);
 
             skip_white_space(buffer, k);
