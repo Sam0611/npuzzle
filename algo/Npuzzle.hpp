@@ -9,6 +9,7 @@
 #include <vector>
 #include <list>
 #include <forward_list>
+#include <unordered_set>
 #include <random>
 #include <new>
 #include <algorithm> // std::find
@@ -40,6 +41,15 @@ typedef struct  s_movement
     s_movement  *previous;
 }   t_movement;
 
+//  functor to overload comparaison function to all_movements 
+struct cmp
+{
+    bool operator() (t_movement *a, t_movement *b) const
+    {
+        return (a->map == b->map);
+    }
+};
+
 class Npuzzle
 {
     public:
@@ -68,7 +78,7 @@ class Npuzzle
 
         std::vector< std::vector<int> > _map;
         std::list<t_movement*>               possibilities;
-        std::forward_list<t_movement*>       all_movements;
+        std::unordered_set<t_movement*, std::hash<t_movement *>, cmp>  all_movements;
 
     private:
         int     get_map_blank(int &i, int &j);

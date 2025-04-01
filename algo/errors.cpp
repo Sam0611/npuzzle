@@ -117,17 +117,6 @@ int err_piece_missing_duplicate(std::ifstream &fs, Npuzzle &npuzzle, int i, int 
     return(0);
 }
 
-// int err_missing_piece(Npuzzle &npuzzle, std::ifstream &fs, int i, int j)
-// {
-//     if (npuzzle._map[i][j].str.empty())
-//     {
-//         std::cerr << "Missing piece on map" << std::endl;
-//         fs.close();
-//         return (1);
-//     }
-//     return(0);
-// }
-
 int err_wrong_syntax(std::ifstream &fs, std::string &buffer, int k)
 {
     if (buffer[k] && !isdigit(buffer[k]))

@@ -8,7 +8,7 @@ Npuzzle::Npuzzle() : _time_complexity(0)
 Npuzzle::~Npuzzle()
 {
     //  delete all movements
-    for (std::forward_list<t_movement*>::iterator it = all_movements.begin(); it != all_movements.end(); it++)
+    for (std::unordered_set<t_movement*, std::hash<t_movement *>, cmp>::iterator it = all_movements.begin(); it != all_movements.end(); it++)
         delete (*it);
 }
 
@@ -128,7 +128,7 @@ int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::ve
 
     //  add in lists
     possibilities.push_front(beginning);
-    all_movements.push_front(beginning);
+    all_movements.insert(beginning);
 
 
     //  check if map already complete
@@ -200,13 +200,19 @@ int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vect
     int heuristic = heuristic_function(movement->map);
     movement->value = heuristic + movement->cost;
 
+    //  check if not already in all_movements to get points in the correction even if it slower to do
+    if (all_movements.find(movement) != all_movements.end())
+    {
+        delete movement;
+        return (0);
+    }
 
     //  add in lists
     std::list<t_movement*>::iterator it = possibilities.begin();
     while (it != possibilities.end() && (movement->value > (*it)->value || (movement->value == (*it)->value && movement->cost < (*it)->cost)))
         it++;
     possibilities.insert(it, movement);
-    all_movements.push_front(movement);
+    all_movements.insert(movement);
 
     //  check if npuzzle finished
     if (finished(heuristic, movement))
