@@ -14,7 +14,6 @@
 #include <new>
 #include <algorithm> // std::find
 #include <ctime> //for test purposes
-#include <functional> //to pass function as parameter
 
 //  square root of INT_MAX troncated
 #define LIMIT_OF_PIECES 46340
