@@ -64,16 +64,17 @@ class Npuzzle
         void    incr_time_complexity(void);
 
         //mains functions
-        int     a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> >));
+        int     a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> > &));
         bool    is_solvable(void);
 
         //heuristics functions
-        static int     get_Misplaced_tiles_value(std::vector< std::vector<int> > map);
-        static int     get_Manhattan_heuristic_value(std::vector< std::vector<int> > map);
+        static int     get_Misplaced_tiles_value(std::vector< std::vector<int> > &map);
+        static int     get_Manhattan_heuristic_value(std::vector< std::vector<int> > &map);
+        static int     get_Manhattan_heuristic_and_linear_conflict_value(std::vector< std::vector<int> > &map);
 
         //heuristic associates functions
-        static int     get_linear_conflicts_value(std::vector< std::vector<int> > map);
-        static void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > map);
+        static int     get_linear_conflicts_value(std::vector< std::vector<int> > &map);
+        static void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > &map);
 
 
         std::vector< std::vector<int> > _map;
@@ -82,8 +83,8 @@ class Npuzzle
 
     private:
         int     get_map_blank(int &i, int &j);
-        int     a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> >), t_movement *movement);
-        int     add_possibility(int (*heuristic_function)(std::vector< std::vector<int> >), t_movement *parent_movement, int direction);
+        int     a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> > &), t_movement *movement);
+        int     add_possibility(int (*heuristic_function)(std::vector< std::vector<int> > &), t_movement *parent_movement, int direction);
         void    movement_assign_map_and_blank(t_movement *movement, t_movement *parent_movement);
         int     finished(int heuristic, t_movement *movement);
         void    print_solution_movement(t_movement *movement);

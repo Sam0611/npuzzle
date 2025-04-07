@@ -16,12 +16,9 @@ int main(int argc, char *argv[])
         return (1);
     }
 
-//testsuppr
-// std::cout << "test = " << npuzzle.get_Manhattan_heuristic_value(npuzzle._map) << std::endl;
-
     //  test a star algo
 clock_t    start = std::clock();
-    if (npuzzle.a_star_algorithm(&npuzzle.get_Manhattan_heuristic_value))
+    if (npuzzle.a_star_algorithm(&npuzzle.get_Manhattan_heuristic_and_linear_conflict_value))
     {
         std::cerr << "ERR a_star probleme" << std::endl;
         return (1);

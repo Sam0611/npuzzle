@@ -103,7 +103,7 @@ int    Npuzzle::get_map_blank(int &i, int &j)
     return(1);
 }
 
-int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> >))
+int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> > &))
 {
     //  initialize "movement" begining
     t_movement  *beginning;
@@ -140,7 +140,7 @@ int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::ve
     return (0);
 }
 
-int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> >), t_movement *movement)
+int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> > &), t_movement *movement)
 {
     //remove front member before expanding
     possibilities.pop_front();
@@ -178,7 +178,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vect
     return(a_star_algorithm_recusrsive(heuristic_function, possibilities.front()));
 }
 
-int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vector<int> >), t_movement *parent_movement, int direction)
+int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vector<int> > &), t_movement *parent_movement, int direction)
 {
     //  create new movement base on parent and direction
     t_movement  *movement;
@@ -277,7 +277,7 @@ void    Npuzzle::print_solution_movement(t_movement *movement)
         std::cout << "→ ";
 }
 
-int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<int> > map)
+int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<int> > &map)
 {
     int to_check = 0;
     int h_value = 0;
@@ -304,6 +304,12 @@ int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<int> > map)
     return (h_value);
 }
 
+int Npuzzle::get_Manhattan_heuristic_and_linear_conflict_value(std::vector< std::vector<int> > &map)
+{
+    return (get_Manhattan_heuristic_value(map) + (get_linear_conflicts_value(map) * 2));
+}
+
+
 int count_conflicts(std::vector<int> goals, std::vector<int> values)
 {
     int conflicts = 0;
@@ -327,7 +333,7 @@ int count_conflicts(std::vector<int> goals, std::vector<int> values)
     return (conflicts);
 }
 
-int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<int> > map)
+int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<int> > &map)
 {
     int conflicts = 0;
     int size = static_cast<int>(map.size());
@@ -364,7 +370,7 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<int> > map)
     return (conflicts);
 }
 
-void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > map)
+void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > &map)
 {
     int size = static_cast<int>(map.size());
     for (int i = 0; i < size; i++)
@@ -380,7 +386,7 @@ void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::ve
     }
 }
 
-int Npuzzle::get_Misplaced_tiles_value(std::vector< std::vector<int> > map)
+int Npuzzle::get_Misplaced_tiles_value(std::vector< std::vector<int> > &map)
 {
     int h_value = 0;
     int number = 1;
