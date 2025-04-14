@@ -1,10 +1,26 @@
 #ifndef DATABASE
 #define DATABASE
 
-#include "Npuzzle.hpp"
-#include <string>
 #include <iostream>
+#include <string>
 #include <unordered_set>
+#include <queue>
+#include <vector>
+#include <fstream>
+
+
+//  directions
+#define BEGIN 0
+#define UP 1
+#define DOWN 2
+#define LEFT 3
+#define RIGHT 4
+
+typedef struct s_coor
+{
+    int i;
+    int j;
+}   t_coor;
 
 typedef struct  s_node
 {
@@ -99,7 +115,10 @@ public:
     Database();
     ~Database();
 
-    int algo(Npuzzle npuzzle);
+    int algo(int size);
+
+    void set_npuzzle_size(int n);
+    int get_npuzzle_size(void);
 
     //variables
     std::queue<t_node*>                                          queue;
@@ -108,17 +127,20 @@ public:
     std::vector< std::vector<int> > patterns;
 
 private:
-    int define_patterns(Npuzzle npuzzle);
-    void    initialize_map(std::vector< std::vector<int> > &map, Npuzzle npuzzle, std::vector<int> &pattern);
-    int algo_iterative(Npuzzle npuzzle);
+    int define_patterns(void);
+    void    initialize_map(std::vector< std::vector<int> > &map, std::vector<int> &pattern);
+    int algo_iterative(void);
     int add_bfs(t_node *node, int direction);
-    int create_pattern_database(Npuzzle npuzzle, int index);
-    std::string get_database_name(Npuzzle npuzzle, int index);
+    int create_pattern_database(int index);
+    std::string get_database_name(int index);
     std::string node_to_string(t_node *node, int index);
 
 
     //utils
     void                            print_map(std::vector< std::vector<int> > map);
+
+    //variables
+    int npuzzle_size;
 };
 
 

@@ -1,5 +1,4 @@
 #include "Npuzzle.hpp"
-#include "Database.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -20,8 +19,8 @@ int main(int argc, char *argv[])
 clock_t    start = std::clock();
 
     //testsuppr pattern database
-    Database    database;
-    if (database.algo(npuzzle))
+    // Database    database;
+    if (npuzzle.database.algo(npuzzle.get_size()))
     {
             std::cerr << "ERR create pattern database problem" << std::endl;
             return (1);

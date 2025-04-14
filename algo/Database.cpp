@@ -13,16 +13,28 @@ Database::~Database(void)
     return;
 }
 
-int Database::algo(Npuzzle npuzzle)
+void Database::set_npuzzle_size(int n)
 {
-    if (define_patterns(npuzzle))
+    npuzzle_size = n;
+}
+
+int Database::get_npuzzle_size(void)
+{
+    return(npuzzle_size);
+}
+
+int Database::algo(int size)
+{
+    set_npuzzle_size(size);
+
+    if (define_patterns())
         return(1);
 
     for (size_t i = 0; i < patterns.size(); i++)
     {
         //check if database already made
         std::ifstream   fs;
-        fs.open(get_database_name(npuzzle, i));
+        fs.open(get_database_name(i));
         if (fs.good())
         {
             fs.close();
@@ -52,9 +64,9 @@ int Database::algo(Npuzzle npuzzle)
         }
         
         //testsuppr
-        initialize_map(node->map, npuzzle, patterns[i]);
-        node->blank.i = npuzzle.get_size() - 1;
-        node->blank.j = npuzzle.get_size() - 1;
+        initialize_map(node->map, patterns[i]);
+        node->blank.i = get_npuzzle_size() - 1;
+        node->blank.j = get_npuzzle_size() - 1;
         node->cost = 0;
         node->direction = BEGIN;
         queue.push(node);
@@ -62,22 +74,22 @@ int Database::algo(Npuzzle npuzzle)
         
         while(queue.size() > 0)
         {
-            if (algo_iterative(npuzzle))
+            if (algo_iterative())
             return (1);
         }
         
         
         std::cout << "closed_list size (final) = " << closed_list.size() << std::endl;
-        if (create_pattern_database(npuzzle, i))
+        if (create_pattern_database(i))
             return (1);
     }
         
     return(0);
 }
     
-int Database::define_patterns(Npuzzle npuzzle)
+int Database::define_patterns(void)
 {
-    switch (npuzzle.get_size())
+    switch (get_npuzzle_size())
     {
         case 1:
         {
@@ -135,9 +147,9 @@ int Database::define_patterns(Npuzzle npuzzle)
     return(0);
 }
 
-void    Database::initialize_map(std::vector< std::vector<int> > &map, Npuzzle npuzzle, std::vector<int> &pattern)
+void    Database::initialize_map(std::vector< std::vector<int> > &map, std::vector<int> &pattern)
 {
-    size_t  limit = npuzzle.get_size();
+    size_t  limit = get_npuzzle_size();
     size_t  k = 0;
     int     nbr = 1;
 
@@ -159,7 +171,7 @@ void    Database::initialize_map(std::vector< std::vector<int> > &map, Npuzzle n
     }
 }
 
-int Database::algo_iterative(Npuzzle npuzzle)
+int Database::algo_iterative()
 {
     t_node *node = queue.front();
     queue.pop();
@@ -180,7 +192,7 @@ int Database::algo_iterative(Npuzzle npuzzle)
             return (1);
     }
     //  explore DOWN
-    if (node->blank.i < npuzzle.get_size() - 1 && node->direction != UP)
+    if (node->blank.i < get_npuzzle_size() - 1 && node->direction != UP)
     {
         if (add_bfs(node, DOWN))
             return (1);
@@ -192,7 +204,7 @@ int Database::algo_iterative(Npuzzle npuzzle)
             return (1);
     }
     //  explore RIGHT
-    if (node->blank.j < npuzzle.get_size() - 1 && node->direction != LEFT)
+    if (node->blank.j < get_npuzzle_size() - 1 && node->direction != LEFT)
     {
         if (add_bfs(node, RIGHT))
             return (1);
@@ -242,7 +254,7 @@ int Database::add_bfs(t_node *node, int direction)
     return(0);
 }
 
-int Database::create_pattern_database(Npuzzle npuzzle, int index)
+int Database::create_pattern_database(int index)
 {
     // create patter_database from closed_list without blank for space optimisation
     t_node  *node; 
@@ -265,7 +277,7 @@ int Database::create_pattern_database(Npuzzle npuzzle, int index)
 
     std::ofstream   fs;
 
-    fs.open(get_database_name(npuzzle, index));
+    fs.open(get_database_name(index));
     if (!fs.good())
     {
         std::cerr << "error while creating database" << std::endl;
@@ -312,11 +324,11 @@ std::string Database::node_to_string(t_node *node, int index)
     return(str);
 }
 
-std::string Database::get_database_name(Npuzzle npuzzle, int index)
+std::string Database::get_database_name(int index)
 {
     std::string     database_name = "database/database";
 
-    database_name += std::to_string(npuzzle.get_size());
+    database_name += std::to_string(get_npuzzle_size());
     database_name += "-";
     database_name += std::to_string(index);
     database_name += ".txt";

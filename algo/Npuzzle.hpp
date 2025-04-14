@@ -3,34 +3,21 @@
 
 #include <iostream>
 #include <string>
-#include <fstream>
 #include <cmath>
 #include <climits>
-#include <vector>
 #include <list>
 #include <forward_list>
-#include <unordered_set>
-#include <queue>
 #include <random>
 #include <new>
 #include <algorithm>    // std::find
 #include <chrono>       // timer
 #include <ctime>        // for test purposes
+#include "Database.hpp"
 
 //  square root of INT_MAX troncated
 #define LIMIT_OF_PIECES 46340
-//  directions
-#define BEGIN 0
-#define UP 1
-#define DOWN 2
-#define LEFT 3
-#define RIGHT 4
 
-typedef struct s_coor
-{
-    int i;
-    int j;
-}   t_coor;
+class Database;
 
 typedef struct  s_movement
 {
@@ -81,6 +68,7 @@ class Npuzzle
         std::vector< std::vector<int> > _map;
         std::list<t_movement*>               possibilities;
         std::unordered_set<t_movement*, std::hash<t_movement *>, cmp>  all_movements;
+        Database    database;
 
     private:
         int     get_map_blank(int &i, int &j);
