@@ -45,10 +45,10 @@ int Database::algo(Npuzzle npuzzle)
         
         //testsuppr
         initialize_map(node->map, npuzzle, patterns[i]);
-        print_map(node->map);
         node->blank.i = npuzzle.get_size() - 1;
         node->blank.j = npuzzle.get_size() - 1;
         node->cost = 0;
+        node->direction = BEGIN;
         queue.push(node);
         
         
@@ -174,25 +174,25 @@ int Database::algo_iterative(Npuzzle npuzzle)
     
     
     //  explore UP
-    if (node->blank.i > 0)
+    if (node->blank.i > 0 && node->direction != DOWN)
     {
         if (add_bfs(node, UP))
             return (1);
     }
     //  explore DOWN
-    if (node->blank.i < npuzzle.get_size() - 1)
+    if (node->blank.i < npuzzle.get_size() - 1 && node->direction != UP)
     {
         if (add_bfs(node, DOWN))
             return (1);
     }
     //  explore LEFT
-    if (node->blank.j > 0)
+    if (node->blank.j > 0 && node->direction != RIGHT)
     {
         if (add_bfs(node, LEFT))
             return (1);
     }
     //  explore RIGHT
-    if (node->blank.j < npuzzle.get_size() - 1)
+    if (node->blank.j < npuzzle.get_size() - 1 && node->direction != LEFT)
     {
         if (add_bfs(node, RIGHT))
             return (1);
@@ -236,6 +236,7 @@ int Database::add_bfs(t_node *node, int direction)
     new_node->map = node->map;
     std::swap(new_node->map[node->blank.i][node->blank.j], new_node->map[new_node->blank.i][new_node->blank.j]);
     new_node->cost = node->cost + 1;
+    new_node->direction = direction;
     queue.push(new_node);
     
     return(0);

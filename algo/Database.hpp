@@ -118,12 +118,6 @@ private:
 
     //utils
     void                            print_map(std::vector< std::vector<int> > map);
-
-
-
-    // std::unordered_set<t_pattern_5> closed_list;
-    // std::unordered_set<uint32_t>    queue;
-
 };
 
 
