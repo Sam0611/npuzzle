@@ -20,7 +20,15 @@ int Database::algo(Npuzzle npuzzle)
 
     for (size_t i = 0; i < patterns.size(); i++)
     {
-        //testsuppr
+        //check if database already made
+        std::ifstream   fs;
+        fs.open(get_database_name(npuzzle, i));
+        if (fs.good())
+        {
+            fs.close();
+            continue;
+        }
+
         //free the nodes
         if (!closed_list.empty())
         {
@@ -60,7 +68,7 @@ int Database::algo(Npuzzle npuzzle)
         
         
         std::cout << "closed_list size (final) = " << closed_list.size() << std::endl;
-        if (create_pattern_database(i))
+        if (create_pattern_database(npuzzle, i))
             return (1);
     }
         
@@ -84,28 +92,22 @@ int Database::define_patterns(Npuzzle npuzzle)
         }
         case 3:
         {
-            std::vector<int>    pattern1 = {1, 2, 3, 4};
-            std::vector<int>    pattern2 = {5, 6, 7, 8};
+            // std::vector<int>    pattern1 = {1, 2, 3, 4};
+            // std::vector<int>    pattern2 = {5, 6, 7, 8};
+            // patterns.push_back(pattern1);
+            // patterns.push_back(pattern2);
+            std::vector<int>    pattern1 = {1, 2, 3, 4, 5, 6, 7, 8};
             patterns.push_back(pattern1);
-            patterns.push_back(pattern2);
             break;
         }
         case 4:
         {
-            // std::vector<int>    pattern1 = {1, 2, 3, 5, 6};
-            // std::vector<int>    pattern2 = {4, 7, 8, 11, 12};
-            // std::vector<int>    pattern3 = {9, 10, 13, 14, 15};
-            // patterns.push_back(pattern1);
-            // patterns.push_back(pattern2);
-            // patterns.push_back(pattern3);
-            std::vector<int>    pattern1 = {1, 2, 3, 5};
-            std::vector<int>    pattern2 = {4, 7, 8, 12};
-            std::vector<int>    pattern3 = {6, 10, 11, 15};
-            std::vector<int>    pattern4 = {9, 13, 14};
+            std::vector<int>    pattern1 = {1, 2, 3, 5, 6};
+            std::vector<int>    pattern2 = {4, 7, 8, 11, 12};
+            std::vector<int>    pattern3 = {9, 10, 13, 14, 15};
             patterns.push_back(pattern1);
             patterns.push_back(pattern2);
             patterns.push_back(pattern3);
-            patterns.push_back(pattern4);
             break;
         }
         case 5:
@@ -122,7 +124,6 @@ int Database::define_patterns(Npuzzle npuzzle)
             patterns.push_back(pattern5);
             break;
         }
-        case 6:
         
         default:
         {
@@ -169,7 +170,6 @@ int Database::algo_iterative(Npuzzle npuzzle)
         delete node;
         return(0);
     }
-    
     closed_list.insert(node);
     
     
@@ -203,8 +203,8 @@ int Database::algo_iterative(Npuzzle npuzzle)
     
 int Database::add_bfs(t_node *node, int direction)
 {
-        t_node *new_node;
-        try
+    t_node *new_node;
+    try
     {
         new_node = new t_node;
     }
@@ -242,9 +242,9 @@ int Database::add_bfs(t_node *node, int direction)
     return(0);
 }
 
-int Database::create_pattern_database(int number)
+int Database::create_pattern_database(Npuzzle npuzzle, int index)
 {
-    // create patter_database from closed_list but without blank and with lower cost value
+    // create patter_database from closed_list without blank for space optimisation
     t_node  *node; 
     for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
     {
@@ -264,11 +264,8 @@ int Database::create_pattern_database(int number)
     std::cout << "pattern_database size = " << pattern_database.size() << std::endl;
 
     std::ofstream   fs;
-    std::string     database_name = "database/database";
-    database_name += std::to_string(number);
-    database_name += ".txt";
 
-    fs.open(database_name);
+    fs.open(get_database_name(npuzzle, index));
     if (!fs.good())
     {
         std::cerr << "error while creating database" << std::endl;
@@ -277,27 +274,26 @@ int Database::create_pattern_database(int number)
 
 
     for (auto it = pattern_database.begin(); it != pattern_database.end(); ++it)
-        fs << node_to_string(*it, number) << std::endl;
+        fs << node_to_string(*it, index) << std::endl;
 
     fs.close();
 
     return(0);
 }
 
-std::string Database::node_to_string(t_node *node, int number)
+std::string Database::node_to_string(t_node *node, int index)
 {
     std::string         str;
-    // std::vector<int>    targets = {1, 2, 3, 4, 5, 6};
     size_t              limit = node->map.size();
 
     //convert map
-    for (size_t i = 0; i < patterns[number].size(); i++)
+    for (size_t i = 0; i < patterns[index].size(); i++)
     {
         for (size_t y = 0; y < limit; y++)
         {
             for (size_t x = 0; x < limit; x++)
             {
-                if (node->map[y][x] == patterns[number][i])
+                if (node->map[y][x] == patterns[index][i])
                 {
                     str += std::to_string(y);
                     str += ',';
@@ -314,6 +310,17 @@ std::string Database::node_to_string(t_node *node, int number)
     str += std::to_string(node->cost);
     
     return(str);
+}
+
+std::string Database::get_database_name(Npuzzle npuzzle, int index)
+{
+    std::string     database_name = "database/database";
+
+    database_name += std::to_string(npuzzle.get_size());
+    database_name += "-";
+    database_name += std::to_string(index);
+    database_name += ".txt";
+    return(database_name);
 }
 
 void    Database::print_map(std::vector< std::vector<int> > map)

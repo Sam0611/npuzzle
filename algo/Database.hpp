@@ -112,8 +112,9 @@ private:
     void    initialize_map(std::vector< std::vector<int> > &map, Npuzzle npuzzle, std::vector<int> &pattern);
     int algo_iterative(Npuzzle npuzzle);
     int add_bfs(t_node *node, int direction);
-    int create_pattern_database(int number);
-    std::string node_to_string(t_node *node, int number);
+    int create_pattern_database(Npuzzle npuzzle, int index);
+    std::string get_database_name(Npuzzle npuzzle, int index);
+    std::string node_to_string(t_node *node, int index);
 
 
     //utils
