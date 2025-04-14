@@ -13,28 +13,6 @@ Database::~Database(void)
     return;
 }
 
-size_t  hash_test(t_node *node)
-{
-    size_t  hash_nbr = 0;
-    for (size_t i = 0; i != node->map.size(); ++i)
-    {
-        for (size_t j = 0; j != node->map[i].size(); j++)
-        {
-            hash_nbr *= 10;
-            hash_nbr += node->map[i][j];
-            while (hash_nbr > 1000)
-                hash_nbr >>= 1;
-        }
-    }
-    hash_nbr *= 10;
-    hash_nbr += node->blank.i;
-    while (hash_nbr > 1000)
-        hash_nbr >>= 1;
-    hash_nbr *= 10;
-    hash_nbr += node->blank.j;
-    return (hash_nbr);
-}
-
 int Database::algo(Npuzzle npuzzle)
 {
     if (define_patterns(npuzzle))

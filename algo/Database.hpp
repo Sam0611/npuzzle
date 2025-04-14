@@ -16,26 +16,33 @@ typedef struct  s_node
 
 struct hash_closed_list
 {
-    size_t  operator() (const t_node *node) const
+    int  operator() (const t_node *node) const
     {
-        size_t  hash_nbr = 0;
+        int  temp = 0;
+        int  hash_nbr = 0;
         for (size_t i = 0; i != node->map.size(); ++i)
         {
             for (size_t j = 0; j != node->map[i].size(); j++)
             {
                 hash_nbr *= 10;
                 hash_nbr += node->map[i][j];
-                while (hash_nbr > 1000)
-                    hash_nbr >>= 1;
+                if (hash_nbr > 100000000)
+                {
+                    temp = temp ^ hash_nbr;
+                    hash_nbr = 0;
+                }
             }
         }
         hash_nbr *= 10;
         hash_nbr += node->blank.i;
-        while (hash_nbr > 1000)
-            hash_nbr >>= 1;
+        if (hash_nbr > 100000000)
+        {
+            temp = temp ^ hash_nbr;
+            hash_nbr = 0;
+        }
         hash_nbr *= 10;
         hash_nbr += node->blank.j;
-        return (hash_nbr);
+        return (temp ^ hash_nbr);
     }
 };
 
@@ -57,18 +64,22 @@ struct hash_pattern_database
 {
     size_t  operator() (const t_node *node) const
     {
-        size_t  hash_nbr = 0;
+        int  temp = 0;
+        int  hash_nbr = 0;
         for (size_t i = 0; i != node->map.size(); ++i)
         {
             for (size_t j = 0; j != node->map[i].size(); j++)
             {
                 hash_nbr *= 10;
                 hash_nbr += node->map[i][j];
-                while (hash_nbr > 1000)
-                    hash_nbr >>= 1;
+                if (hash_nbr > 100000000)
+                {
+                    temp = temp ^ hash_nbr;
+                    hash_nbr = 0;
+                }
             }
         }
-        return (hash_nbr);
+        return (temp ^ hash_nbr);
     }
 };
 
