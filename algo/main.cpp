@@ -1,5 +1,5 @@
 #include "Npuzzle.hpp"
-#include <chrono>
+#include "Database.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -18,11 +18,23 @@ int main(int argc, char *argv[])
 
     //  test a star algo
 clock_t    start = std::clock();
-    if (npuzzle.a_star_algorithm(&npuzzle.get_Manhattan_heuristic_and_linear_conflict_value))
+
+    //testsuppr pattern database
+    Database    database;
+    if (database.algo(npuzzle))
     {
-        std::cerr << "ERR a_star probleme" << std::endl;
-        return (1);
+            std::cerr << "ERR create pattern database problem" << std::endl;
+            return (1);
     }
+
+
+
+
+    // if (npuzzle.a_star_algorithm(npuzzle.get_Manhattan_heuristic_and_linear_conflict_value))
+    // {
+    //     std::cerr << "ERR a_star problem" << std::endl;
+    //     return (1);
+    // }
 std::clock_t    end = std::clock();
 std::cout << "time : " << end - start << " ms" << std::endl;
 }

@@ -1,9 +1,11 @@
 
-SRC = main.cpp Npuzzle.cpp parsing.cpp errors.cpp
+SRC = main.cpp Npuzzle.cpp Database.cpp parsing.cpp errors.cpp
 
 OBJ	= ${SRC:.cpp=.o}
 
 NAME = npuzzle
+
+DATABASE = database/*
 
 CXX = c++
 
@@ -23,7 +25,7 @@ clean:
 	${RM} ${OBJ}
 
 fclean:	clean
-	${RM} ${NAME}
+	${RM} ${NAME} ${DATABASE}
 
 re: fclean ${NAME}
 

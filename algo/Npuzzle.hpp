@@ -10,10 +10,12 @@
 #include <list>
 #include <forward_list>
 #include <unordered_set>
+#include <queue>
 #include <random>
 #include <new>
-#include <algorithm> // std::find
-#include <ctime> //for test purposes
+#include <algorithm>    // std::find
+#include <chrono>       // timer
+#include <ctime>        // for test purposes
 
 //  square root of INT_MAX troncated
 #define LIMIT_OF_PIECES 46340
