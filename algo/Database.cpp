@@ -7,7 +7,17 @@ Database::Database(void)
 
 Database::~Database(void)
 {
-    //free the nodes
+    //delete nodes in queue if no match in closed_list (unique)
+    while (queue.size() > 0)
+    {
+        t_node *node = queue.front();
+
+        if (closed_list.find(node) == closed_list.end())
+            delete node;
+        queue.pop();
+    }
+
+    //free closed_list
     for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
         delete (*it);
     return;
@@ -30,54 +40,17 @@ int Database::algo(int size)
     if (define_patterns())
         return(1);
 
+        
     for (size_t i = 0; i < patterns.size(); i++)
     {
-        //check if database already made
-        std::ifstream   fs;
-        fs.open(get_database_name(i));
-        if (fs.good())
-        {
-            fs.close();
-            continue;
-        }
-
-        //  initialize node
-        t_node  *node;
-        try
-        {
-            node = new t_node;
-        }
-        catch(const std::bad_alloc& bad_alloc)
-        {
-            std::cerr << "bad_alloc caught " << bad_alloc.what() << std::endl;
-            return(1);
-        }
-        
-        //testsuppr
-        initialize_map(node->map, patterns[i]);
-        node->blank.i = get_npuzzle_size() - 1;
-        node->blank.j = get_npuzzle_size() - 1;
-        node->cost = 0;
-        node->direction = BEGIN;
-        queue.push(node);
-        
-        
-        while(queue.size() > 0)
-        {
-            if (algo_iterative())
-            return (1);
-        }
-
-        //free the nodes
-        pattern_database.clear();
-        for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
-            delete (*it);
-        closed_list.clear();
-        
-        
-        std::cout << "closed_list size (final) = " << closed_list.size() << std::endl;
         if (create_pattern_database(i))
-            return (1);
+            return(1);
+    }
+
+    for (size_t i = 0; i < patterns.size(); i++)
+    {
+        if (fill_database_map(i))
+            return(1);
     }
         
     return(0);
@@ -100,10 +73,6 @@ int Database::define_patterns(void)
         }
         case 3:
         {
-            // std::vector<int>    pattern1 = {1, 2, 3, 4};
-            // std::vector<int>    pattern2 = {5, 6, 7, 8};
-            // patterns.push_back(pattern1);
-            // patterns.push_back(pattern2);
             std::vector<int>    pattern1 = {1, 2, 3, 4, 5, 6, 7, 8};
             patterns.push_back(pattern1);
             break;
@@ -143,6 +112,59 @@ int Database::define_patterns(void)
     return(0);
 }
 
+int Database::create_pattern_database(int index)
+{
+    //check if database already made
+    std::ifstream   fs;
+    fs.open(get_database_name(index));
+    if (fs.good())
+    {
+        fs.close();
+        return(0);
+    }
+    fs.close();
+
+    //  allocate node
+    t_node  *node;
+    try
+    {
+        node = new t_node;
+    }
+    catch(const std::bad_alloc& bad_alloc)
+    {
+        std::cerr << "bad_alloc caught " << bad_alloc.what() << std::endl;
+        return(1);
+    }
+    
+    //  initialize node
+    initialize_map(node->map, patterns[index]);
+    node->blank.i = get_npuzzle_size() - 1;
+    node->blank.j = get_npuzzle_size() - 1;
+    node->cost = 0;
+    node->direction = BEGIN;
+    queue.push(node);
+    
+    
+    while(queue.size() > 0)
+    {
+        if (bfs())
+        return (1);
+    }
+    
+    std::cout << "closed_list size (final) = " << closed_list.size() << std::endl;
+
+    if (create_pattern_database_no_blank_tile(index))
+        return (1);
+
+    //free the nodes
+    pattern_database.clear();
+    for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
+        delete (*it);
+    closed_list.clear();
+
+    return(0);
+}
+
 void    Database::initialize_map(std::vector< std::vector<int> > &map, std::vector<int> &pattern)
 {
     size_t  limit = get_npuzzle_size();
@@ -167,7 +189,7 @@ void    Database::initialize_map(std::vector< std::vector<int> > &map, std::vect
     }
 }
 
-int Database::algo_iterative()
+int Database::bfs()
 {
     t_node *node = queue.front();
     queue.pop();
@@ -184,32 +206,32 @@ int Database::algo_iterative()
     //  explore UP
     if (node->blank.i > 0 && node->direction != DOWN)
     {
-        if (add_bfs(node, UP))
+        if (bfs_add_node(node, UP))
             return (1);
     }
     //  explore DOWN
     if (node->blank.i < get_npuzzle_size() - 1 && node->direction != UP)
     {
-        if (add_bfs(node, DOWN))
+        if (bfs_add_node(node, DOWN))
             return (1);
     }
     //  explore LEFT
     if (node->blank.j > 0 && node->direction != RIGHT)
     {
-        if (add_bfs(node, LEFT))
+        if (bfs_add_node(node, LEFT))
             return (1);
     }
     //  explore RIGHT
     if (node->blank.j < get_npuzzle_size() - 1 && node->direction != LEFT)
     {
-        if (add_bfs(node, RIGHT))
+        if (bfs_add_node(node, RIGHT))
             return (1);
     }
         
     return (0);
 }
     
-int Database::add_bfs(t_node *node, int direction)
+int Database::bfs_add_node(t_node *node, int direction)
 {
     t_node *new_node;
     try
@@ -250,7 +272,7 @@ int Database::add_bfs(t_node *node, int direction)
     return(0);
 }
 
-int Database::create_pattern_database(int index)
+int Database::create_pattern_database_no_blank_tile(int index)
 {
     // create patter_database from closed_list without blank for space optimisation
     t_node  *node; 
@@ -269,7 +291,7 @@ int Database::create_pattern_database(int index)
     }
 
 
-    std::cout << "pattern_database size = " << pattern_database.size() << std::endl;
+    std::cout << "pattern_database no blank size = " << pattern_database.size() << std::endl;
 
     std::ofstream   fs;
 
@@ -277,6 +299,7 @@ int Database::create_pattern_database(int index)
     if (!fs.good())
     {
         std::cerr << "error while creating database" << std::endl;
+        fs.close();
         return(1);
     }
 
@@ -304,9 +327,7 @@ std::string Database::node_to_string(t_node *node, int index)
                 if (node->map[y][x] == patterns[index][i])
                 {
                     str += std::to_string(y);
-                    str += ',';
                     str += std::to_string(x);
-                    str += ',';
                     x = limit;
                     y = limit;
                 }
@@ -318,6 +339,39 @@ std::string Database::node_to_string(t_node *node, int index)
     str += std::to_string(node->cost);
     
     return(str);
+}
+
+int Database::fill_database_map(int index)
+{
+    std::ifstream   fs;
+
+    fs.open(get_database_name(index));
+    if (!fs.good())
+    {
+        std::cerr << "error while filing databases map" << std::endl;
+        fs.close();
+        return(1);
+    }
+
+    //add current map pattern database to vector "database"
+    std::unordered_map<std::string, int>    database_map;
+    databases_map.push_back(database_map);
+
+    std::string buffer;
+    int         number_of_tiles = patterns[index].size() * 2;
+
+    getline(fs, buffer);
+    while(fs.good())
+    {
+        std::string str_pattern = buffer.substr(0, number_of_tiles);
+        int         cost        = std::stoi(buffer.substr(number_of_tiles, buffer.size() - number_of_tiles));
+
+        databases_map[index].emplace(str_pattern, cost);
+
+        getline(fs, buffer);
+    }
+    fs.close();
+    return (0);
 }
 
 std::string Database::get_database_name(int index)

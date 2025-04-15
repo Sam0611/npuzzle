@@ -6,6 +6,7 @@
 #include <unordered_set>
 #include <queue>
 #include <vector>
+#include <unordered_map>
 #include <fstream>
 
 
@@ -126,14 +127,17 @@ public:
     std::unordered_set<t_node*, hash_closed_list, cmp_closed_list>   closed_list;
     std::unordered_set<t_node*, hash_pattern_database, cmp_pattern_database>   pattern_database;
     std::vector< std::vector<int> > patterns;
+    std::vector< std::unordered_map<std::string, int> >   databases_map;
 
 private:
+    int create_pattern_database(int index);
     int define_patterns(void);
     void    initialize_map(std::vector< std::vector<int> > &map, std::vector<int> &pattern);
-    int algo_iterative(void);
-    int add_bfs(t_node *node, int direction);
-    int create_pattern_database(int index);
+    int bfs(void);
+    int bfs_add_node(t_node *node, int direction);
+    int create_pattern_database_no_blank_tile(int index);
     std::string node_to_string(t_node *node, int index);
+    int fill_database_map(int index);
 
 
     //utils
