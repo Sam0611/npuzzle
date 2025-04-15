@@ -119,6 +119,7 @@ public:
 
     void set_npuzzle_size(int n);
     int get_npuzzle_size(void);
+    std::string get_database_name(int index);
 
     //variables
     std::queue<t_node*>                                          queue;
@@ -132,7 +133,6 @@ private:
     int algo_iterative(void);
     int add_bfs(t_node *node, int direction);
     int create_pattern_database(int index);
-    std::string get_database_name(int index);
     std::string node_to_string(t_node *node, int index);
 
 

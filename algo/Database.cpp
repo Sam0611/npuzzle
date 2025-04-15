@@ -41,16 +41,6 @@ int Database::algo(int size)
             continue;
         }
 
-        //free the nodes
-        if (!closed_list.empty())
-        {
-            pattern_database.clear();
-            for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
-                delete (*it);
-            closed_list.clear();
-        }
-
-
         //  initialize node
         t_node  *node;
         try
@@ -77,6 +67,12 @@ int Database::algo(int size)
             if (algo_iterative())
             return (1);
         }
+
+        //free the nodes
+        pattern_database.clear();
+        for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
+            delete (*it);
+        closed_list.clear();
         
         
         std::cout << "closed_list size (final) = " << closed_list.size() << std::endl;

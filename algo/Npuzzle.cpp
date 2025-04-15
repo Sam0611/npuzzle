@@ -103,7 +103,7 @@ int    Npuzzle::get_map_blank(int &i, int &j)
     return(1);
 }
 
-int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> > &))
+int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle))
 {
     //  initialize "movement" begining
     t_movement  *beginning;
@@ -132,7 +132,7 @@ int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::ve
 
 
     //  check if map already complete
-    if (finished(heuristic_function(_map), beginning))
+    if (finished(heuristic_function(_map, *this), beginning))
         return(0);
 
     a_star_algorithm_recusrsive(heuristic_function, beginning);
@@ -140,7 +140,7 @@ int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::ve
     return (0);
 }
 
-int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> > &), t_movement *movement)
+int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle), t_movement *movement)
 {
     //remove front member before expanding
     possibilities.pop_front();
@@ -178,7 +178,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vect
     return(a_star_algorithm_recusrsive(heuristic_function, possibilities.front()));
 }
 
-int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vector<int> > &), t_movement *parent_movement, int direction)
+int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle), t_movement *parent_movement, int direction)
 {
     //  create new movement base on parent and direction
     t_movement  *movement;
@@ -197,7 +197,7 @@ int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vect
     movement_assign_map_and_blank(movement, parent_movement);
     movement->previous = parent_movement;
 
-    int heuristic = heuristic_function(movement->map);
+    int heuristic = heuristic_function(movement->map, *this);
     movement->value = heuristic + movement->cost;
 
     //  check if not already in all_movements to get points in the correction even if it slower to do
@@ -277,8 +277,9 @@ void    Npuzzle::print_solution_movement(t_movement *movement)
         std::cout << "→ ";
 }
 
-int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<int> > &map)
+int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<int> > &map, Npuzzle &npuzzle)
 {
+    (void)npuzzle;
     int to_check = 0;
     int h_value = 0;
     int x, y;
@@ -304,9 +305,9 @@ int Npuzzle::get_Manhattan_heuristic_value(std::vector< std::vector<int> > &map)
     return (h_value);
 }
 
-int Npuzzle::get_Manhattan_heuristic_and_linear_conflict_value(std::vector< std::vector<int> > &map)
+int Npuzzle::get_Manhattan_heuristic_and_linear_conflict_value(std::vector< std::vector<int> > &map, Npuzzle &npuzzle)
 {
-    return (get_Manhattan_heuristic_value(map) + (get_linear_conflicts_value(map) * 2));
+    return (get_Manhattan_heuristic_value(map, npuzzle) + (get_linear_conflicts_value(map) * 2));
 }
 
 
@@ -370,6 +371,21 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<int> > &map)
     return (conflicts);
 }
 
+int Npuzzle::get_pattern_database_heuristic_value(std::vector< std::vector<int> > &map, Npuzzle &npuzzle)
+{
+    // int heuristic = 0;
+    (void)map;
+    (void)npuzzle;
+
+    // for (size_t i = 0; i < npuzzle.database.patterns.size(); i++)
+    // {
+    //     std::string database_name = npuzzle.database.get_database_name(i);
+    //     std::string command = "";
+
+    // }
+    return (0);
+}
+
 void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > &map)
 {
     int size = static_cast<int>(map.size());
@@ -386,8 +402,9 @@ void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::ve
     }
 }
 
-int Npuzzle::get_Misplaced_tiles_value(std::vector< std::vector<int> > &map)
+int Npuzzle::get_Misplaced_tiles_value(std::vector< std::vector<int> > &map, Npuzzle &npuzzle)
 {
+    (void)npuzzle;
     int h_value = 0;
     int number = 1;
     int size = static_cast<int>(map.size());
