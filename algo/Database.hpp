@@ -121,6 +121,7 @@ public:
     void set_npuzzle_size(int n);
     int get_npuzzle_size(void);
     std::string get_database_name(int index);
+    std::string map_to_string(std::vector< std::vector<int> > &map, int index);
 
     //variables
     std::queue<t_node*>                                          queue;

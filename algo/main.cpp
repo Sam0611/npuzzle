@@ -29,11 +29,11 @@ clock_t    start = std::clock();
 
 
 
-    // if (npuzzle.a_star_algorithm(npuzzle.get_Manhattan_heuristic_and_linear_conflict_value))
-    // {
-    //     std::cerr << "ERR a_star problem" << std::endl;
-    //     return (1);
-    // }
+    if (npuzzle.a_star_algorithm(npuzzle.get_pattern_database_heuristic_value))
+    {
+        std::cerr << "ERR a_star problem" << std::endl;
+        return (1);
+    }
 std::clock_t    end = std::clock();
 std::cout << "time : " << end - start << " ms" << std::endl;
 }

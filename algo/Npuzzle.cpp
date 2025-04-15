@@ -373,17 +373,23 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<int> > &map)
 
 int Npuzzle::get_pattern_database_heuristic_value(std::vector< std::vector<int> > &map, Npuzzle &npuzzle)
 {
-    // int heuristic = 0;
-    (void)map;
-    (void)npuzzle;
+    int heuristic = 0;
+    // (void)map;
+    // (void)npuzzle;
 
-    // for (size_t i = 0; i < npuzzle.database.patterns.size(); i++)
-    // {
-    //     std::string database_name = npuzzle.database.get_database_name(i);
-    //     std::string command = "";
+    for (size_t i = 0; i < npuzzle.database.databases_map.size(); i++)
+    {
+        auto it = npuzzle.database.databases_map[i].find(npuzzle.database.map_to_string(map, i));
+        if (it == npuzzle.database.databases_map[i].end())
+        {
+            std::cerr << "Error database altered" << std::endl;
+            return(1);
+        }
 
-    // }
-    return (0);
+        heuristic += it->second;
+    }
+
+    return (heuristic);
 }
 
 void Npuzzle::set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > &map)

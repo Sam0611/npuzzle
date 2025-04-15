@@ -314,17 +314,29 @@ int Database::create_pattern_database_no_blank_tile(int index)
 
 std::string Database::node_to_string(t_node *node, int index)
 {
-    std::string         str;
-    size_t              limit = node->map.size();
-
+    std::string str;
+    
     //convert map
+    str += map_to_string(node->map, index);
+
+    //convert score
+    str += std::to_string(node->cost);
+    
+    return(str);
+}
+
+std::string Database::map_to_string(std::vector< std::vector<int> > &map, int index)
+{
+    std::string         str;
+    size_t              limit = map.size();
+
     for (size_t i = 0; i < patterns[index].size(); i++)
     {
         for (size_t y = 0; y < limit; y++)
         {
             for (size_t x = 0; x < limit; x++)
             {
-                if (node->map[y][x] == patterns[index][i])
+                if (map[y][x] == patterns[index][i])
                 {
                     str += std::to_string(y);
                     str += std::to_string(x);
@@ -334,10 +346,6 @@ std::string Database::node_to_string(t_node *node, int index)
             }
         }
     }
-
-    //convert score
-    str += std::to_string(node->cost);
-    
     return(str);
 }
 
