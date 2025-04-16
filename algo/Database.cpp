@@ -40,18 +40,25 @@ int Database::algo(int size)
     if (define_patterns())
         return(1);
 
-        
+
+    //testsuppr
+    std::cout << "test1" << std::endl;
+
     for (size_t i = 0; i < patterns.size(); i++)
     {
         if (create_pattern_database(i))
             return(1);
     }
 
+    std::cout << "test2" << std::endl;
+
     for (size_t i = 0; i < patterns.size(); i++)
     {
         if (fill_database_map(i))
             return(1);
     }
+
+    std::cout << "test3" << std::endl;
         
     return(0);
 }
@@ -430,8 +437,16 @@ int Database::fill_database_map(int index)
     getline(fs, buffer);
     while(fs.good())
     {
+        int buffer_size = static_cast<int>(buffer.size());
+
+        if (buffer_size <= number_of_tiles)
+        {
+            std::cerr << "Err databases has been altered" << std::endl;
+            return(1);
+        }
+
         std::string str_pattern = buffer.substr(0, number_of_tiles);
-        int         cost        = std::stoi(buffer.substr(number_of_tiles, buffer.size() - number_of_tiles));
+        int         cost        = std::stoi(buffer.substr(number_of_tiles, buffer_size - number_of_tiles));
 
         databases_map[index].emplace(str_pattern, cost);
 
