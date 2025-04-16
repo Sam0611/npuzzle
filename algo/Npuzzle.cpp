@@ -8,7 +8,7 @@ Npuzzle::Npuzzle() : _time_complexity(0)
 Npuzzle::~Npuzzle()
 {
     //  delete all movements
-    for (std::unordered_set<t_movement*, std::hash<t_movement *>, cmp>::iterator it = all_movements.begin(); it != all_movements.end(); it++)
+    for (std::unordered_set<t_movement*, hash_movement, cmp_movement>::iterator it = all_movements.begin(); it != all_movements.end(); it++)
         delete (*it);
 }
 

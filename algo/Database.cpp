@@ -143,6 +143,21 @@ int Database::create_pattern_database(int index)
     node->cost = 0;
     node->direction = BEGIN;
     queue.push(node);
+
+    //testsuppr
+    // std::cout << "sizeof(t_node) = " << sizeof(t_node) << std::endl;
+    // std::cout << "sizeof(t_node *) = " << sizeof(t_node *) << std::endl;
+    // std::cout << "sizeof(node) = " << sizeof(node) << std::endl;
+    // std::cout << "sizeof(*node) = " << sizeof(*node) << std::endl;
+    // std::cout << "sizeof(node->map) = " << sizeof(node->map) << std::endl;
+    // std::cout << "sizeof(node->map[0]) = " << sizeof(node->map[0]) << std::endl;
+    // std::cout << "sizeof(node->map[0][0]) = " << sizeof(node->map[0][0]) << std::endl;
+    // std::cout << "sizeof(node->cost) = " << sizeof(node->cost) << std::endl;
+    // std::cout << "sizeof(node->direction) = " << sizeof(node->direction) << std::endl;
+    // std::cout << "sizeof(node->blank) = " << sizeof(node->blank) << std::endl;
+    // std::cout << "sizeof(node->blank.i) = " << sizeof(node->blank.i) << std::endl;
+    // std::cout << "sizeof(node->blank.j) = " << sizeof(node->blank.j) << std::endl;
+    // return (1);
     
     
     while(queue.size() > 0)
@@ -315,7 +330,7 @@ int Database::create_pattern_database_no_blank_tile(int index)
 std::string Database::node_to_string(t_node *node, int index)
 {
     std::string str;
-    
+
     //convert map
     str += map_to_string(node->map, index);
 

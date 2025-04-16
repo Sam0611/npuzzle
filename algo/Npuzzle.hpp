@@ -29,8 +29,31 @@ typedef struct  s_movement
     s_movement  *previous;
 }   t_movement;
 
+struct hash_movement
+{
+    int  operator() (const t_movement *movement) const
+    {
+        int  temp = 0;
+        int  hash_nbr = 0;
+        for (size_t i = 0; i != movement->map.size(); i++)
+        {
+            for (size_t j = 0; j != movement->map[i].size(); j++)
+            {
+                hash_nbr *= 10;
+                hash_nbr += movement->map[i][j];
+                if (hash_nbr > 100000000)
+                {
+                    temp = temp ^ hash_nbr;
+                    hash_nbr = 0;
+                }
+            }
+        }
+        return (temp ^ hash_nbr);
+    }
+};
+
 //  functor to overload comparaison function to all_movements 
-struct cmp
+struct cmp_movement
 {
     bool operator() (t_movement *a, t_movement *b) const
     {
@@ -69,7 +92,8 @@ class Npuzzle
 
         std::vector< std::vector<int> > _map;
         std::list<t_movement*>               possibilities;
-        std::unordered_set<t_movement*, std::hash<t_movement *>, cmp>  all_movements;
+        std::unordered_set<t_movement*, hash_movement, cmp_movement>  all_movements;
+        // std::unordered_set<t_movement*, std::hash<t_movement *>, cmp_movement>  all_movements;
         Database    database;
 
     private:
