@@ -89,16 +89,46 @@ int Database::define_patterns(void)
         }
         case 5:
         {
-            std::vector<int>    pattern1 = {1, 2, 3, 6, 7};
-            std::vector<int>    pattern2 = {4, 5, 9, 10, 15};
-            std::vector<int>    pattern3 = {8, 11, 12, 13};
-            std::vector<int>    pattern4 = {16, 17, 21, 22, 23};
-            std::vector<int>    pattern5 = {14, 18, 19, 20, 24};
+            std::vector<int>    pattern1 = {1, 2, 3, 6};
+            std::vector<int>    pattern2 = {4, 5, 10, 15};
+            std::vector<int>    pattern3 = {7, 8, 11, 12};
+            std::vector<int>    pattern4 = {9, 13, 14, 18};
+            std::vector<int>    pattern5 = {16, 17, 21, 22};
+            std::vector<int>    pattern6 = {19, 20, 23, 24};
             patterns.push_back(pattern1);
             patterns.push_back(pattern2);
             patterns.push_back(pattern3);
             patterns.push_back(pattern4);
             patterns.push_back(pattern5);
+            patterns.push_back(pattern6);
+            break;
+        }
+        case 6:
+        {
+            std::vector<int>    pattern1 = {1, 2, 7};
+            std::vector<int>    pattern2 = {3, 8, 9};
+            std::vector<int>    pattern3 = {4, 5, 10};
+            std::vector<int>    pattern4 = {6, 11, 12};
+            std::vector<int>    pattern5 = {13, 14, 19};
+            std::vector<int>    pattern6 = {15, 16, 21};
+            std::vector<int>    pattern7 = {17, 22, 23};
+            std::vector<int>    pattern8 = {18, 24};
+            std::vector<int>    pattern9 = {20, 26, 27};
+            std::vector<int>    pattern10 = {25, 31, 32};
+            std::vector<int>    pattern11 = {28, 33, 34};
+            std::vector<int>    pattern12 = {29, 30, 35};
+            patterns.push_back(pattern1);
+            patterns.push_back(pattern2);
+            patterns.push_back(pattern3);
+            patterns.push_back(pattern4);
+            patterns.push_back(pattern5);
+            patterns.push_back(pattern6);
+            patterns.push_back(pattern7);
+            patterns.push_back(pattern8);
+            patterns.push_back(pattern9);
+            patterns.push_back(pattern10);
+            patterns.push_back(pattern11);
+            patterns.push_back(pattern12);
             break;
         }
         
@@ -124,6 +154,7 @@ int Database::create_pattern_database(int index)
     }
     fs.close();
 
+
     //  allocate node
     t_node  *node;
     try
@@ -135,9 +166,12 @@ int Database::create_pattern_database(int index)
         std::cerr << "bad_alloc caught " << bad_alloc.what() << std::endl;
         return(1);
     }
+
+
     
     //  initialize node
     initialize_map(node->map, patterns[index]);
+    
     node->blank.i = get_npuzzle_size() - 1;
     node->blank.j = get_npuzzle_size() - 1;
     node->cost = 0;
@@ -163,7 +197,7 @@ int Database::create_pattern_database(int index)
     while(queue.size() > 0)
     {
         if (bfs())
-        return (1);
+            return (1);
     }
     
     std::cout << "closed_list size (final) = " << closed_list.size() << std::endl;
@@ -185,6 +219,16 @@ void    Database::initialize_map(std::vector< std::vector<int> > &map, std::vect
     size_t  limit = get_npuzzle_size();
     size_t  k = 0;
     int     nbr = 1;
+
+    //testsuppr
+    // std::cout << "test1" << std::endl;
+    // std::cout << "get_npuzzle_size()" << get_npuzzle_size() << std::endl;
+    // std::cout << "size = " << map.size() << std::endl;
+    // std::cout << "max_size = " << map.max_size() << std::endl;
+    // map.resize(get_npuzzle_size());
+    // std::cout << "size = " << map.size() << std::endl;
+    // std::cout << "max_size = " << map.max_size() << std::endl;
+    // std::cout << "test2" << std::endl;
 
     for (size_t i = 0; i < limit; i++)
     {
