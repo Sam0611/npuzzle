@@ -194,6 +194,8 @@ static void  shuffle_fisher_yates_algorithm(Npuzzle &npuzzle, int size)
 
 static void  npuzzle_generate_map(Npuzzle &npuzzle)
 {
+    npuzzle.set_map_generated();
+
     int size = npuzzle.get_size();
     int nbr = 0;
 
@@ -204,15 +206,17 @@ static void  npuzzle_generate_map(Npuzzle &npuzzle)
         npuzzle._map.push_back(initialization);
         for (int j = 0; j < size; j++)
         {
-            npuzzle._map[i].push_back(0);
+            npuzzle._map[i].push_back(nbr);
             nbr++;
         }
     }
 
     shuffle_fisher_yates_algorithm(npuzzle, size);
+    while (!npuzzle.is_solvable())
+        shuffle_fisher_yates_algorithm(npuzzle, size);        
 }
 
-int    npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle)
+int    Npuzzle::npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle)
 {
 
     if (check_args_count(argc))

@@ -5,11 +5,11 @@ int main(int argc, char *argv[])
     //  initialize puzzle class
     Npuzzle npuzzle;
 
-    if (npuzzle_parsing(argc, argv, npuzzle))
+    if (npuzzle.npuzzle_parsing(argc, argv, npuzzle))
         return (1);
 
     // check if map is solvable
-    if (!npuzzle.is_solvable())
+    if (!npuzzle.get_map_generated() && !npuzzle.is_solvable())
     {
         std::cerr << "Error: map is unsolvable" << std::endl;
         return (1);
@@ -19,14 +19,11 @@ int main(int argc, char *argv[])
 clock_t    start = std::clock();
 
     //testsuppr pattern database
-    // Database    database;
     if (npuzzle.database.algo(npuzzle.get_size()))
     {
             std::cerr << "ERR create pattern database problem" << std::endl;
             return (1);
     }
-
-
 
 
     if (npuzzle.a_star_algorithm(npuzzle.get_pattern_database_heuristic_value))

@@ -13,6 +13,7 @@
 #include <chrono>       // timer
 #include <ctime>        // for test purposes
 #include "Database.hpp"
+#include <stdio.h>
 
 //  square root of INT_MAX troncated
 #define LIMIT_OF_PIECES 46340
@@ -73,8 +74,11 @@ class Npuzzle
         int     get_max_piece(void);
         int     get_time_complexity(void);
         void    incr_time_complexity(void);
+        void    set_map_generated(void);
+        bool    get_map_generated(void);
 
         //mains functions
+        int     npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle);
         int     a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle));
         bool    is_solvable(void);
 
@@ -107,10 +111,8 @@ class Npuzzle
         int _size;
         int _max_piece;
         int _time_complexity;
+        int _map_generated;
 };
-
-//  parsing functions
-int    npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle);
 
 //  errors functions
 int err_open_text_file(char **argv, std::ifstream &fs);

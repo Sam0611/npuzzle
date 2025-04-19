@@ -40,17 +40,11 @@ int Database::algo(int size)
     if (define_patterns())
         return(1);
 
-
-    //testsuppr
-    std::cout << "test1" << std::endl;
-
     for (size_t i = 0; i < patterns.size(); i++)
     {
         if (create_pattern_database(i))
             return(1);
     }
-
-    std::cout << "test2" << std::endl;
 
     for (size_t i = 0; i < patterns.size(); i++)
     {
@@ -58,8 +52,6 @@ int Database::algo(int size)
             return(1);
     }
 
-    std::cout << "test3" << std::endl;
-        
     return(0);
 }
     
@@ -138,10 +130,9 @@ int Database::define_patterns(void)
             patterns.push_back(pattern12);
             break;
         }
-        
         default:
         {
-            std::cerr << "Pattern database heuristic not supported for puzzle of 6 or more" << std::endl;
+            std::cerr << "Pattern database heuristic not supported for puzzle of 7 or more" << std::endl;
             return (1);
         }
     }
@@ -185,22 +176,6 @@ int Database::create_pattern_database(int index)
     node->direction = BEGIN;
     queue.push(node);
 
-    //testsuppr
-    // std::cout << "sizeof(t_node) = " << sizeof(t_node) << std::endl;
-    // std::cout << "sizeof(t_node *) = " << sizeof(t_node *) << std::endl;
-    // std::cout << "sizeof(node) = " << sizeof(node) << std::endl;
-    // std::cout << "sizeof(*node) = " << sizeof(*node) << std::endl;
-    // std::cout << "sizeof(node->map) = " << sizeof(node->map) << std::endl;
-    // std::cout << "sizeof(node->map[0]) = " << sizeof(node->map[0]) << std::endl;
-    // std::cout << "sizeof(node->map[0][0]) = " << sizeof(node->map[0][0]) << std::endl;
-    // std::cout << "sizeof(node->cost) = " << sizeof(node->cost) << std::endl;
-    // std::cout << "sizeof(node->direction) = " << sizeof(node->direction) << std::endl;
-    // std::cout << "sizeof(node->blank) = " << sizeof(node->blank) << std::endl;
-    // std::cout << "sizeof(node->blank.i) = " << sizeof(node->blank.i) << std::endl;
-    // std::cout << "sizeof(node->blank.j) = " << sizeof(node->blank.j) << std::endl;
-    // return (1);
-    
-    
     while(queue.size() > 0)
     {
         if (bfs())
@@ -226,16 +201,6 @@ void    Database::initialize_map(std::vector< std::vector<int> > &map, std::vect
     size_t  limit = get_npuzzle_size();
     size_t  k = 0;
     int     nbr = 1;
-
-    //testsuppr
-    // std::cout << "test1" << std::endl;
-    // std::cout << "get_npuzzle_size()" << get_npuzzle_size() << std::endl;
-    // std::cout << "size = " << map.size() << std::endl;
-    // std::cout << "max_size = " << map.max_size() << std::endl;
-    // map.resize(get_npuzzle_size());
-    // std::cout << "size = " << map.size() << std::endl;
-    // std::cout << "max_size = " << map.max_size() << std::endl;
-    // std::cout << "test2" << std::endl;
 
     for (size_t i = 0; i < limit; i++)
     {

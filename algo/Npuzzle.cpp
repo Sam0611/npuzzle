@@ -1,6 +1,6 @@
 #include "Npuzzle.hpp"
 
-Npuzzle::Npuzzle() : _time_complexity(0)
+Npuzzle::Npuzzle() : _time_complexity(0), _map_generated(0)
 {
     return;
 }
@@ -37,6 +37,16 @@ int     Npuzzle::get_time_complexity(void)
 void    Npuzzle::incr_time_complexity(void)
 {
     _time_complexity++;
+}
+
+void    Npuzzle::set_map_generated(void)
+{
+    _map_generated++;
+}
+
+bool    Npuzzle::get_map_generated(void)
+{
+    return(_map_generated);
 }
 
 bool    Npuzzle::is_solvable(void)
@@ -374,8 +384,6 @@ int Npuzzle::get_linear_conflicts_value(std::vector< std::vector<int> > &map)
 int Npuzzle::get_pattern_database_heuristic_value(std::vector< std::vector<int> > &map, Npuzzle &npuzzle)
 {
     int heuristic = 0;
-    // (void)map;
-    // (void)npuzzle;
 
     for (size_t i = 0; i < npuzzle.database.databases_map.size(); i++)
     {

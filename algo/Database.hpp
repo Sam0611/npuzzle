@@ -130,6 +130,9 @@ public:
     std::vector< std::vector<int> > patterns;
     std::vector< std::unordered_map<std::string, int> >   databases_map;
 
+    //utils
+    static void                            print_map(std::vector< std::vector<int> > map);
+
 private:
     int create_pattern_database(int index);
     int define_patterns(void);
@@ -140,9 +143,6 @@ private:
     std::string node_to_string(t_node *node, int index);
     int fill_database_map(int index);
 
-
-    //utils
-    void                            print_map(std::vector< std::vector<int> > map);
 
     //variables
     int npuzzle_size;
