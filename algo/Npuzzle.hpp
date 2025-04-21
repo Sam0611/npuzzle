@@ -19,6 +19,15 @@
 #define LIMIT_OF_PIECES 46340
 
 class Database;
+class Npuzzle;
+
+typedef int (*heuristic_func)(std::vector< std::vector<int> > &, Npuzzle &npuzzle);
+
+//  heuristic function
+#define MISPLACED_TILE "1"
+#define MANHATTAN "2"
+#define MANHATTAN_LINEAR_CONFLICT "3"
+#define PATTERN_DATABASE "4"
 
 typedef struct  s_movement
 {
@@ -79,7 +88,7 @@ class Npuzzle
 
         //mains functions
         int     npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle);
-        int     a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle));
+        int     a_star_algorithm();
         bool    is_solvable(void);
 
         //heuristics functions
@@ -99,11 +108,12 @@ class Npuzzle
         std::unordered_set<t_movement*, hash_movement, cmp_movement>  all_movements;
         // std::unordered_set<t_movement*, std::hash<t_movement *>, cmp_movement>  all_movements;
         Database    database;
+        heuristic_func  _heuristic_func;
 
     private:
         int     get_map_blank(int &i, int &j);
-        int     a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle), t_movement *movement);
-        int     add_possibility(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle), t_movement *parent_movement, int direction);
+        int     a_star_algorithm_recusrsive(t_movement *movement);
+        int     add_possibility(t_movement *parent_movement, int direction);
         void    movement_assign_map_and_blank(t_movement *movement, t_movement *parent_movement);
         int     finished(int heuristic, t_movement *movement);
         void    print_solution_movement(t_movement *movement);

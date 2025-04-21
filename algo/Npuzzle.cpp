@@ -113,7 +113,7 @@ int    Npuzzle::get_map_blank(int &i, int &j)
     return(1);
 }
 
-int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle))
+int     Npuzzle::a_star_algorithm(void)
 {
     //  initialize "movement" begining
     t_movement  *beginning;
@@ -142,15 +142,15 @@ int     Npuzzle::a_star_algorithm(int (*heuristic_function)(std::vector< std::ve
 
 
     //  check if map already complete
-    if (finished(heuristic_function(_map, *this), beginning))
+    if (finished(_heuristic_func(_map, *this), beginning))
         return(0);
 
-    a_star_algorithm_recusrsive(heuristic_function, beginning);
+    a_star_algorithm_recusrsive(beginning);
 
     return (0);
 }
 
-int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle), t_movement *movement)
+int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
 {
     //remove front member before expanding
     possibilities.pop_front();
@@ -159,36 +159,36 @@ int     Npuzzle::a_star_algorithm_recusrsive(int (*heuristic_function)(std::vect
     //  can go UP
     if (movement->direction != DOWN && movement->blank.i > 0)
     {
-        if (add_possibility(heuristic_function, movement, UP))
+        if (add_possibility(movement, UP))
             return(1);
     }
 
     //  can go DOWN
     if (movement->direction != UP && movement->blank.i < _size - 1)
     {
-        if (add_possibility(heuristic_function, movement, DOWN))
+        if (add_possibility(movement, DOWN))
             return (1);
     }
 
     //  can go LEFT
     if (movement->direction != RIGHT && movement->blank.j > 0)
     {
-        if (add_possibility(heuristic_function, movement, LEFT))
+        if (add_possibility(movement, LEFT))
             return(1);
     }
 
     //  can go RIGHT
     if (movement->direction != LEFT && movement->blank.j < _size - 1)
     {
-        if (add_possibility(heuristic_function, movement, RIGHT))
+        if (add_possibility(movement, RIGHT))
             return(1);
     }
 
     //  launch with the smaller value
-    return(a_star_algorithm_recusrsive(heuristic_function, possibilities.front()));
+    return(a_star_algorithm_recusrsive(possibilities.front()));
 }
 
-int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vector<int> > &, Npuzzle &npuzzle), t_movement *parent_movement, int direction)
+int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
 {
     //  create new movement base on parent and direction
     t_movement  *movement;
@@ -207,7 +207,7 @@ int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vect
     movement_assign_map_and_blank(movement, parent_movement);
     movement->previous = parent_movement;
 
-    int heuristic = heuristic_function(movement->map, *this);
+    int heuristic = _heuristic_func(movement->map, *this);
     movement->value = heuristic + movement->cost;
 
     //  check if not already in all_movements to get points in the correction even if it slower to do
@@ -219,7 +219,7 @@ int    Npuzzle::add_possibility(int (*heuristic_function)(std::vector< std::vect
 
     //  add in lists
     std::list<t_movement*>::iterator it = possibilities.begin();
-    while (it != possibilities.end() && (movement->value > (*it)->value || (movement->value == (*it)->value && movement->cost < (*it)->cost)))
+    while (it != possibilities.end() && movement->value > (*it)->value)
         it++;
     possibilities.insert(it, movement);
     all_movements.insert(movement);
