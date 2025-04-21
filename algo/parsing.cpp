@@ -2,16 +2,47 @@
 
 static int  check_args_count(int argc)
 {
-    //  if no puzzle or number provided
-    if (argc != 2)
+    if (argc < 2) 
     {
-        if (argc < 2) 
-            std::cerr << "Not enough arguments" << std::endl;
-        if (argc > 2) 
-            std::cerr << "Too many arguments" << std::endl;
+        std::cerr << "Not enough arguments" << std::endl;
+        return(1);
+    }
+    if (argc > 3) 
+    {
+        std::cerr << "Too many arguments" << std::endl;
         return (1);
     }
     return (0);
+}
+
+static int bad_heuristic(Npuzzle &npuzzle, int argc, char **argv)
+{
+    if (argc == 2)
+        npuzzle._heuristic_func = npuzzle.get_Manhattan_heuristic_value;
+    else if (argc == 3)
+    {
+        std::string heuristic_name(argv[2]);
+
+        if (heuristic_name == MISPLACED_TILE || heuristic_name == "-misplaced_value")
+            npuzzle._heuristic_func = npuzzle.get_Misplaced_tiles_value;
+        else if (heuristic_name == MANHATTAN || heuristic_name == "-manhattan")
+            npuzzle._heuristic_func = npuzzle.get_Manhattan_heuristic_value;
+        else if (heuristic_name == MANHATTAN_LINEAR_CONFLICT || heuristic_name == "-manhattan_linear_conflict")
+            npuzzle._heuristic_func = npuzzle.get_Manhattan_heuristic_and_linear_conflict_value;
+        else if (heuristic_name == PATTERN_DATABASE || heuristic_name == "-pattern_database")
+            npuzzle._heuristic_func = npuzzle.get_pattern_database_heuristic_value;
+        else
+        {
+            std::cerr << "Err invalid argument for heuristic choice" << std::endl;
+            std::cout << "please choose among the following :" << std::endl;
+            std::cout << "-Misplaced tile value : \"1\" or \"-misplaced_value\"" << std::endl;
+            std::cout << "-Manhattan value : \"2\" or \"-manhattan\" or no argument by default" << std::endl;
+            std::cout << "-Manhattan and linear conflict value : \"3\" or \"-manhattan_linear_conflict\"" << std::endl;
+            std::cout << "-patter database value : \"4\" or \"-pattern_database\"" << std::endl;
+            return(1);
+        }
+    }
+    return(0);
 }
 
 static void  skip_white_space(std::string &buffer, int &i)
@@ -95,9 +126,6 @@ static int  npuzzle_map_is_invalid(std::ifstream &fs, std::string buffer, Npuzzl
                 if (err_piece_to_big(fs, buffer, npuzzle.get_max_piece(), npuzzle._map[i][j]))
                     return(1);
             }
-
-            // if (err_missing_piece(npuzzle, fs, i, j))
-            //     return(1);
 
             if (err_piece_missing_duplicate(fs, npuzzle, i, j, npuzzle._map[i][j]))
                 return(1);
@@ -220,6 +248,9 @@ int    Npuzzle::npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle)
 {
 
     if (check_args_count(argc))
+        return(1);
+
+    if (bad_heuristic(npuzzle, argc, argv))
         return(1);
 
     std::string file_format = ".txt";

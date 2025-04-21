@@ -19,14 +19,14 @@ int main(int argc, char *argv[])
 clock_t    start = std::clock();
 
     //testsuppr pattern database
-    if (npuzzle.database.algo(npuzzle.get_size()))
+    if (npuzzle._heuristic_func == npuzzle.get_pattern_database_heuristic_value && npuzzle.database.algo(npuzzle.get_size()))
     {
             std::cerr << "ERR create pattern database problem" << std::endl;
             return (1);
     }
 
-
-    if (npuzzle.a_star_algorithm(npuzzle.get_pattern_database_heuristic_value))
+    // if (npuzzle.a_star_algorithm(npuzzle.get_pattern_database_heuristic_value))
+    if (npuzzle.a_star_algorithm())
     {
         std::cerr << "ERR a_star problem" << std::endl;
         return (1);
