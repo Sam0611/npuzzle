@@ -2,6 +2,8 @@
 
 int main(int argc, char *argv[])
 {
+clock_t    start = std::clock();
+
     //  initialize puzzle class
     Npuzzle npuzzle;
 
@@ -15,10 +17,8 @@ int main(int argc, char *argv[])
         return (1);
     }
 
-    //  test a star algo
-clock_t    start = std::clock();
 
-    //testsuppr pattern database
+
     if (npuzzle._heuristic_func == npuzzle.get_pattern_database_heuristic_value && npuzzle.database.algo(npuzzle.get_size()))
     {
             std::cerr << "ERR create pattern database problem" << std::endl;

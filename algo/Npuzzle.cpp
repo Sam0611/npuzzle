@@ -10,6 +10,10 @@ Npuzzle::~Npuzzle()
     //  delete all movements
     for (std::unordered_set<t_movement*, hash_movement, cmp_movement>::iterator it = all_movements.begin(); it != all_movements.end(); it++)
         delete (*it);
+
+    // delete all duplicates movements
+    for (std::unordered_set<t_movement*, hash_movement, cmp_movement>::iterator it = duplicates.begin(); it != duplicates.end(); it++)
+        delete (*it);
 }
 
 void    Npuzzle::set_size(int size)
@@ -127,7 +131,7 @@ int     Npuzzle::a_star_algorithm(void)
         return (1);
     }
     
-    beginning->value = 0;
+    beginning->value = _heuristic_func(_map, *this);
     beginning->direction = BEGIN;
     beginning->cost = 0;
     if (get_map_blank(beginning->blank.i, beginning->blank.j))
@@ -201,7 +205,6 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
         std::cerr << "bad_alloc caught : " << bad_alloc.what() << std::endl;
         return (1);
     }
-
     movement->cost = parent_movement->cost + 1;
     movement->direction = direction;
     movement_assign_map_and_blank(movement, parent_movement);
@@ -210,11 +213,21 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     int heuristic = _heuristic_func(movement->map, *this);
     movement->value = heuristic + movement->cost;
 
+
     //  check if not already in all_movements to get points in the correction even if it slower to do
-    if (all_movements.find(movement) != all_movements.end())
+    auto match = all_movements.find(movement);
+    if (match != all_movements.end())
     {
-        delete movement;
-        return (0);
+        if (movement->value >= (*match)->value)
+        {
+            delete movement;
+            return (0);
+        }
+        else
+        {
+            duplicates.insert(*match);
+            all_movements.erase(*match);
+        }
     }
 
     //  add in lists
@@ -223,6 +236,7 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
         it++;
     possibilities.insert(it, movement);
     all_movements.insert(movement);
+
 
     //  check if npuzzle finished
     if (finished(heuristic, movement))
@@ -267,6 +281,8 @@ int Npuzzle::finished(int heuristic, t_movement *movement)
         print_solution_movement(movement);
         std::cout << std::endl;
         std::cout << "npuzzle finish in : " << movement->cost << " moves" << std::endl;
+        std::cout << "all_movements size = " << all_movements.size() << std::endl;
+        std::cout << "duplicates size = " << duplicates.size() << std::endl;
         return (1);
     }
     return(0);

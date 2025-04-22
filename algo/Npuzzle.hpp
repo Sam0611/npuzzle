@@ -106,7 +106,8 @@ class Npuzzle
         std::vector< std::vector<int> > _map;
         std::list<t_movement*>               possibilities;
         std::unordered_set<t_movement*, hash_movement, cmp_movement>  all_movements;
-        // std::unordered_set<t_movement*, std::hash<t_movement *>, cmp_movement>  all_movements;
+        std::unordered_set<t_movement*, hash_movement, cmp_movement>  duplicates;
+
         Database    database;
         heuristic_func  _heuristic_func;
 
