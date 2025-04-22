@@ -12,8 +12,11 @@ Npuzzle::~Npuzzle()
         delete (*it);
 
     // delete all duplicates movements
-    for (std::unordered_set<t_movement*, hash_movement, cmp_movement>::iterator it = duplicates.begin(); it != duplicates.end(); it++)
-        delete (*it);
+    while (duplicates.size())
+    {
+        delete duplicates.front();
+        duplicates.pop();
+    }
 }
 
 void    Npuzzle::set_size(int size)
@@ -237,7 +240,7 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
         }
         else
         {
-            duplicates.insert(*match);
+            duplicates.push(*match);
             all_movements.erase(*match);
         }
     }

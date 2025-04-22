@@ -116,7 +116,7 @@ class Npuzzle
         std::priority_queue<t_movement*, std::vector<t_movement*>, cmp_priority_queue>               possibilities;
         // std::list<t_movement*>               possibilities;
         std::unordered_set<t_movement*, hash_movement, cmp_movement>  all_movements;
-        std::unordered_set<t_movement*, hash_movement, cmp_movement>  duplicates;
+        std::queue<t_movement*>  duplicates;
 
         Database    database;
         heuristic_func  _heuristic_func;
