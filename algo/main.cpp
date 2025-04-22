@@ -17,8 +17,6 @@ clock_t    start = std::clock();
         return (1);
     }
 
-
-
     if (npuzzle._heuristic_func == npuzzle.get_pattern_database_heuristic_value && npuzzle.database.algo(npuzzle.get_size()))
     {
             std::cerr << "ERR create pattern database problem" << std::endl;

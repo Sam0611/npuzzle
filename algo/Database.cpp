@@ -130,6 +130,42 @@ int Database::define_patterns(void)
             patterns.push_back(pattern12);
             break;
         }
+        case 7:
+        {
+            std::vector<int>    pattern1 = {1, 2, 8};
+            std::vector<int>    pattern2 = {3, 4, 10};
+            std::vector<int>    pattern3 = {5, 6, 12};
+            std::vector<int>    pattern4 = {7, 13, 14};
+            std::vector<int>    pattern5 = {9, 15, 16};
+            std::vector<int>    pattern6 = {11, 17, 18};
+            std::vector<int>    pattern7 = {19, 20, 26};
+            std::vector<int>    pattern8 = {21, 27, 28};
+            std::vector<int>    pattern9 = {22, 23, 29};
+            std::vector<int>    pattern10 = {24, 30, 31};
+            std::vector<int>    pattern11 = {25, 32, 33};
+            std::vector<int>    pattern12 = {34, 35, 42};
+            std::vector<int>    pattern13 = {36, 43, 44};
+            std::vector<int>    pattern14 = {37, 38, 45};
+            std::vector<int>    pattern15 = {39, 40, 46};
+            std::vector<int>    pattern16 = {41, 47, 48};
+            patterns.push_back(pattern1);
+            patterns.push_back(pattern2);
+            patterns.push_back(pattern3);
+            patterns.push_back(pattern4);
+            patterns.push_back(pattern5);
+            patterns.push_back(pattern6);
+            patterns.push_back(pattern7);
+            patterns.push_back(pattern8);
+            patterns.push_back(pattern9);
+            patterns.push_back(pattern10);
+            patterns.push_back(pattern11);
+            patterns.push_back(pattern12);
+            patterns.push_back(pattern13);
+            patterns.push_back(pattern14);
+            patterns.push_back(pattern15);
+            patterns.push_back(pattern16);
+            break;
+        }
         default:
         {
             std::cerr << "Pattern database heuristic not supported for puzzle of 7 or more" << std::endl;
