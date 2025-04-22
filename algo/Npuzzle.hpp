@@ -6,8 +6,6 @@
 #include <cmath>
 #include <climits>
 #include <queue>
-#include <list>
-#include <forward_list>
 #include <random>
 #include <new>
 #include <algorithm>    // std::find
@@ -91,10 +89,12 @@ class Npuzzle
         int     get_size(void);
         int     get_max_piece(void);
         int     get_time_complexity(void);
+        bool    get_map_generated(void);
+        bool     get_map_finished(void);
         void    incr_time_complexity(void);
         void    set_map_generated(void);
-        bool    get_map_generated(void);
-
+        void    set_map_finished(void);
+        
         //mains functions
         int     npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle);
         int     a_star_algorithm();
@@ -133,6 +133,7 @@ class Npuzzle
         int _max_piece;
         int _time_complexity;
         int _map_generated;
+        int _map_finished;
 };
 
 //  errors functions

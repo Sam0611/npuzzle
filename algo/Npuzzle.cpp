@@ -1,6 +1,6 @@
 #include "Npuzzle.hpp"
 
-Npuzzle::Npuzzle() : _time_complexity(0), _map_generated(0)
+Npuzzle::Npuzzle() : _time_complexity(0), _map_generated(0), _map_finished(0)
 {
     return;
 }
@@ -43,14 +43,24 @@ void    Npuzzle::incr_time_complexity(void)
     _time_complexity++;
 }
 
+bool    Npuzzle::get_map_generated(void)
+{
+    return(_map_generated);
+}
+
 void    Npuzzle::set_map_generated(void)
 {
     _map_generated++;
 }
 
-bool    Npuzzle::get_map_generated(void)
+bool    Npuzzle::get_map_finished(void)
 {
-    return(_map_generated);
+    return(_map_finished);
+}
+
+void    Npuzzle::set_map_finished(void)
+{
+    _map_finished++;
 }
 
 bool    Npuzzle::is_solvable(void)
@@ -148,7 +158,11 @@ int     Npuzzle::a_star_algorithm(void)
     if (finished(_heuristic_func(_map, *this), beginning))
         return(0);
 
-    a_star_algorithm_recusrsive(beginning);
+    while (!get_map_finished())
+    {
+        if (a_star_algorithm_recusrsive(possibilities.top()))
+            return(0);
+    }
 
     return (0);
 }
@@ -187,8 +201,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
             return(1);
     }
 
-    //  launch with the smaller value
-    return(a_star_algorithm_recusrsive(possibilities.top()));
+    return(0);
 }
 
 int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
@@ -270,6 +283,7 @@ int Npuzzle::finished(int heuristic, t_movement *movement)
 {
     if (heuristic == 0)
     {
+        
         std::cout << "complexity in time : " << get_time_complexity() << std::endl;
         std::cout << "complexity in size : " << possibilities.size() << std::endl;
         std::cout << "solution : ";
@@ -278,6 +292,7 @@ int Npuzzle::finished(int heuristic, t_movement *movement)
         std::cout << "npuzzle finish in : " << movement->cost << " moves" << std::endl;
         std::cout << "all_movements size = " << all_movements.size() << std::endl;
         std::cout << "duplicates size = " << duplicates.size() << std::endl;
+        set_map_finished();
         return (1);
     }
     return(0);
