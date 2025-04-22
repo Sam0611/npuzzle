@@ -140,8 +140,7 @@ int     Npuzzle::a_star_algorithm(void)
     beginning->previous = NULL;
 
 
-    //  add in lists
-    possibilities.push_front(beginning);
+    possibilities.push(beginning);
     all_movements.insert(beginning);
 
 
@@ -155,9 +154,9 @@ int     Npuzzle::a_star_algorithm(void)
 }
 
 int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
-{
+    {
     //remove front member before expanding
-    possibilities.pop_front();
+    possibilities.pop();
     incr_time_complexity();
 
     //  can go UP
@@ -189,7 +188,7 @@ int     Npuzzle::a_star_algorithm_recusrsive(t_movement *movement)
     }
 
     //  launch with the smaller value
-    return(a_star_algorithm_recusrsive(possibilities.front()));
+    return(a_star_algorithm_recusrsive(possibilities.top()));
 }
 
 int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
@@ -230,11 +229,7 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
         }
     }
 
-    //  add in lists
-    std::list<t_movement*>::iterator it = possibilities.begin();
-    while (it != possibilities.end() && movement->value > (*it)->value)
-        it++;
-    possibilities.insert(it, movement);
+    possibilities.push(movement);
     all_movements.insert(movement);
 
 

@@ -5,6 +5,7 @@
 #include <string>
 #include <cmath>
 #include <climits>
+#include <queue>
 #include <list>
 #include <forward_list>
 #include <random>
@@ -71,6 +72,14 @@ struct cmp_movement
     }
 };
 
+struct cmp_priority_queue
+{
+    bool operator() (t_movement *a, t_movement *b) const
+    {
+        return (a->value >= b->value);
+    }
+};
+
 class Npuzzle
 {
     public:
@@ -104,7 +113,8 @@ class Npuzzle
 
 
         std::vector< std::vector<int> > _map;
-        std::list<t_movement*>               possibilities;
+        std::priority_queue<t_movement*, std::vector<t_movement*>, cmp_priority_queue>               possibilities;
+        // std::list<t_movement*>               possibilities;
         std::unordered_set<t_movement*, hash_movement, cmp_movement>  all_movements;
         std::unordered_set<t_movement*, hash_movement, cmp_movement>  duplicates;
 
