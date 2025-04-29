@@ -136,6 +136,8 @@ public:
 private:
     int create_pattern_database(int index);
     int define_patterns(void);
+    int database_already_made(int index);
+    t_node *initialize_node(int index);
     void    initialize_map(std::vector< std::vector<int> > &map, std::vector<int> &pattern);
     int bfs(void);
     int bfs_add_node(t_node *node, int direction);

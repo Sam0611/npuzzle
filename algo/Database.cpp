@@ -224,39 +224,14 @@ int Database::define_patterns(void)
 
 int Database::create_pattern_database(int index)
 {
-    //check if database already made
-    std::ifstream   fs;
-    fs.open(get_database_name(index));
-    if (fs.good())
-    {
-        fs.close();
+    if (database_already_made(index))
         return(0);
-    }
-    fs.close();
 
-
-    //  allocate node
-    t_node  *node;
-    try
-    {
-        node = new t_node;
-    }
-    catch(const std::bad_alloc& bad_alloc)
-    {
-        std::cerr << "bad_alloc caught " << bad_alloc.what() << std::endl;
+    t_node  *node = initialize_node(index);
+    if (!node)
         return(1);
-    }
-
-
-    
-    //  initialize node
-    initialize_map(node->map, patterns[index]);
-    
-    node->blank.i = get_npuzzle_size() - 1;
-    node->blank.j = get_npuzzle_size() - 1;
-    node->cost = 0;
-    node->direction = BEGIN;
     queue.push(node);
+
 
     while(queue.size() > 0)
     {
@@ -264,13 +239,11 @@ int Database::create_pattern_database(int index)
             return (1);
     }
     
-    std::cout << "closed_list size (final) = " << closed_list.size() << std::endl;
-
     if (create_pattern_database_no_blank_tile(index))
         return (1);
 
     //indic user about the creation of the database
-    std::cout << "Database " << index << " finished (" << closed_list.size() << " case explored" << std::endl;
+    std::cout << "Database " << index << " finished (" << closed_list.size() << " cases explored)" << std::endl;
 
     //free the nodes
     pattern_database.clear();
@@ -279,6 +252,42 @@ int Database::create_pattern_database(int index)
     closed_list.clear();
 
     return(0);
+}
+
+int Database::database_already_made(int index)
+{
+    std::ifstream   fs;
+    fs.open(get_database_name(index));
+    if (fs.good())
+    {
+        fs.close();
+        return(1);
+    }
+    fs.close();
+    return(0);
+}
+
+t_node *Database::initialize_node(int index)
+{
+    t_node *node;
+    try
+    {
+        node = new t_node;
+    }
+    catch(const std::bad_alloc& bad_alloc)
+    {
+        std::cerr << "bad_alloc caught " << bad_alloc.what() << std::endl;
+        return(NULL);
+    }
+
+    //  initialize node
+    initialize_map(node->map, patterns[index]);
+    node->blank.i = get_npuzzle_size() - 1;
+    node->blank.j = get_npuzzle_size() - 1;
+    node->cost = 0;
+    node->direction = BEGIN;
+
+    return(node);
 }
 
 void    Database::initialize_map(std::vector< std::vector<int> > &map, std::vector<int> &pattern)
@@ -406,8 +415,6 @@ int Database::create_pattern_database_no_blank_tile(int index)
             pattern_database.insert(node);
     }
 
-
-    std::cout << "pattern_database no blank size = " << pattern_database.size() << std::endl;
 
     std::ofstream   fs;
 
