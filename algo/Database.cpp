@@ -269,6 +269,9 @@ int Database::create_pattern_database(int index)
     if (create_pattern_database_no_blank_tile(index))
         return (1);
 
+    //indic user about the creation of the database
+    std::cout << "Database " << index << " finished (" << closed_list.size() << " case explored" << std::endl;
+
     //free the nodes
     pattern_database.clear();
     for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
