@@ -293,8 +293,6 @@ int Npuzzle::finished(int heuristic, t_movement *movement)
         print_solution_movement(movement);
         std::cout << std::endl;
         std::cout << "npuzzle finish in : " << movement->cost << " moves" << std::endl;
-        std::cout << "all_movements size = " << all_movements.size() << std::endl;
-        std::cout << "duplicates size = " << duplicates.size() << std::endl;
         set_map_finished();
         return (1);
     }
