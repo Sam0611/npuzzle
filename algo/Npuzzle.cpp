@@ -288,7 +288,7 @@ int Npuzzle::finished(int heuristic, t_movement *movement)
     {
         
         std::cout << "complexity in time : " << get_time_complexity() << std::endl;
-        std::cout << "complexity in size : " << possibilities.size() << std::endl;
+        std::cout << "complexity in size : " << possibilities.size() + all_movements.size() + duplicates.size() << std::endl;
         std::cout << "solution : ";
         print_solution_movement(movement);
         std::cout << std::endl;

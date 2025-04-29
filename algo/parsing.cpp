@@ -242,6 +242,10 @@ static void  npuzzle_generate_map(Npuzzle &npuzzle)
     shuffle_fisher_yates_algorithm(npuzzle, size);
     while (!npuzzle.is_solvable())
         shuffle_fisher_yates_algorithm(npuzzle, size);        
+
+    std::cout << "map :" << std::endl;
+    npuzzle.database.print_map(npuzzle._map);
+    std::cout << std::endl;
 }
 
 int    Npuzzle::npuzzle_parsing(int argc, char **argv, Npuzzle &npuzzle)
