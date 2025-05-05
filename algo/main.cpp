@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-clock_t    start = std::clock();
+    auto    start = std::chrono::high_resolution_clock::now();
 
     //  initialize puzzle class
     Npuzzle npuzzle;
@@ -29,6 +29,7 @@ clock_t    start = std::clock();
         std::cerr << "ERR a_star problem" << std::endl;
         return (1);
     }
-std::clock_t    end = std::clock();
-std::cout << "time : " << end - start << " ms" << std::endl;
+
+    auto    end = std::chrono::high_resolution_clock::now();
+    std::cout << "time : " << static_cast<std::chrono::duration<double>>(end - start).count() << " seconds" << std::endl;
 }
