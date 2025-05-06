@@ -8,6 +8,7 @@
 #include <vector>
 #include <unordered_map>
 #include <fstream>
+#include <thread>
 
 
 //  directions
@@ -117,6 +118,7 @@ public:
     ~Database();
 
     int algo(int size);
+    static int lunch_create_pattern_database_in_threads(Database &database, int index);
 
     void set_npuzzle_size(int n);
     int get_npuzzle_size(void);
@@ -124,9 +126,9 @@ public:
     std::string map_to_string(std::vector< std::vector<int> > &map, int index);
 
     //variables
-    std::queue<t_node*>                                          queue;
-    std::unordered_set<t_node*, hash_closed_list, cmp_closed_list>   closed_list;
-    std::unordered_set<t_node*, hash_pattern_database, cmp_pattern_database>   pattern_database;
+    std::vector< std::queue <t_node*> >                                                         queue;
+    std::vector< std::unordered_set <t_node*, hash_closed_list, cmp_closed_list> >              closed_list;
+    std::vector< std::unordered_set <t_node*, hash_pattern_database, cmp_pattern_database> >    pattern_database;
     std::vector< std::vector<int> > patterns;
     std::vector< std::unordered_map<std::string, int> >   databases_map;
 
@@ -139,8 +141,8 @@ private:
     int database_already_made(int index);
     t_node *initialize_node(int index);
     void    initialize_map(std::vector< std::vector<int> > &map, std::vector<int> &pattern);
-    int bfs(void);
-    int bfs_add_node(t_node *node, int direction);
+    int bfs(int index);
+    int bfs_add_node(t_node *node, int direction, int index);
     int create_pattern_database_no_blank_tile(int index);
     std::string node_to_string(t_node *node, int index);
     int fill_database_map(int index);
@@ -148,6 +150,7 @@ private:
 
     //variables
     int npuzzle_size;
+    int max_threads;
 };
 
 

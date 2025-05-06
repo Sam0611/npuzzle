@@ -7,20 +7,23 @@ Database::Database(void)
 
 Database::~Database(void)
 {
-    //delete nodes in queue if no match in closed_list (unique)
-    while (queue.size() > 0)
+    for (size_t i = 0; i < patterns.size(); i++)
     {
-        t_node *node = queue.front();
-
-        if (closed_list.find(node) == closed_list.end())
-            delete node;
-        queue.pop();
+        //delete nodes in queue if no match in closed_list (unique)
+        while (queue[i].size() > 0)
+        {
+            t_node *node = queue[i].front();
+    
+            if (closed_list[i].find(node) == closed_list[i].end())
+                delete node;
+            queue[i].pop();
+        }
+    
+        //free closed_list
+        for (auto it = closed_list[i].begin(); it != closed_list[i].end(); ++it)
+            delete (*it);
+        return;
     }
-
-    //free closed_list
-    for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
-        delete (*it);
-    return;
 }
 
 void Database::set_npuzzle_size(int n)
@@ -42,8 +45,32 @@ int Database::algo(int size)
 
     for (size_t i = 0; i < patterns.size(); i++)
     {
-        if (create_pattern_database(i))
-            return(1);
+        std::queue<t_node *>                                                        queue_temp;
+        std::unordered_set <t_node*, hash_closed_list, cmp_closed_list>             closed_list_temp;
+        std::unordered_set <t_node*, hash_pattern_database, cmp_pattern_database>   pattern_database_temp;
+
+        queue.push_back(queue_temp);
+        closed_list.push_back(closed_list_temp);
+        pattern_database.push_back(pattern_database_temp);
+    }
+
+    std::vector<std::thread>    threads;
+    size_t                      loop = patterns.size();
+    while (loop)
+    {
+        //make "max_threads" or "remaining databases" threads
+        int i = 0;
+        while (loop && i < max_threads)
+        {
+            loop--;
+            i++;
+        }
+        
+        for (size_t j = i; j > 0; j--)
+            threads.push_back(std::thread(lunch_create_pattern_database_in_threads, std::ref(*this), loop + j - 1));
+        for (size_t j = i; j > 0; j--)
+            threads[j - 1].join();
+        threads.clear();
     }
 
     for (size_t i = 0; i < patterns.size(); i++)
@@ -52,6 +79,16 @@ int Database::algo(int size)
             return(1);
     }
 
+    return(0);
+}
+
+int Database::lunch_create_pattern_database_in_threads(Database &database, int index)
+{
+    for (size_t i = 0; i < database.patterns.size(); i++)
+    {
+        if (database.create_pattern_database(index))
+            return(1);
+    }
     return(0);
 }
     
@@ -68,12 +105,14 @@ int Database::define_patterns(void)
         {
             std::vector<int> pattern1 = {1, 2, 3};
             patterns.push_back(pattern1);
+            max_threads = patterns.size();
             break;
         }
         case 3:
         {
             std::vector<int>    pattern1 = {1, 2, 3, 4, 5, 6, 7, 8};
             patterns.push_back(pattern1);
+            max_threads = patterns.size();
             break;
         }
         case 4:
@@ -84,6 +123,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern1);
             patterns.push_back(pattern2);
             patterns.push_back(pattern3);
+            max_threads = patterns.size();
             break;
         }
         case 5:
@@ -100,6 +140,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern4);
             patterns.push_back(pattern5);
             patterns.push_back(pattern6);
+            max_threads = patterns.size();
             break;
         }
         case 6:
@@ -128,6 +169,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern10);
             patterns.push_back(pattern11);
             patterns.push_back(pattern12);
+            max_threads = patterns.size();
             break;
         }
         case 7:
@@ -164,6 +206,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern14);
             patterns.push_back(pattern15);
             patterns.push_back(pattern16);
+            max_threads = 4;
             break;
         }
         case 8:
@@ -210,6 +253,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern19);
             patterns.push_back(pattern20);
             patterns.push_back(pattern21);
+            max_threads = 1;
             break;
         }
         default:
@@ -230,12 +274,12 @@ int Database::create_pattern_database(int index)
     t_node  *node = initialize_node(index);
     if (!node)
         return(1);
-    queue.push(node);
+    queue[index].push(node);
 
 
-    while(queue.size() > 0)
+    while(queue[index].size() > 0)
     {
-        if (bfs())
+        if (bfs(index))
             return (1);
     }
     
@@ -243,13 +287,13 @@ int Database::create_pattern_database(int index)
         return (1);
 
     //indic user about the creation of the database
-    std::cout << "Database " << index << " finished (" << closed_list.size() << " cases explored)" << std::endl;
+    std::cout << "Database " << index << " finished (" << closed_list[index].size() << " cases explored)" << std::endl;
 
     //free the nodes
-    pattern_database.clear();
-    for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
+    pattern_database[index].clear();
+    for (auto it = closed_list[index].begin(); it != closed_list[index].end(); ++it)
         delete (*it);
-    closed_list.clear();
+    closed_list[index].clear();
 
     return(0);
 }
@@ -314,49 +358,49 @@ void    Database::initialize_map(std::vector< std::vector<int> > &map, std::vect
     }
 }
 
-int Database::bfs()
+int Database::bfs(int index)
 {
-    t_node *node = queue.front();
-    queue.pop();
+    t_node *node = queue[index].front();
+    queue[index].pop();
     
     //search if map already in closed_list
-    if (closed_list.find(node) != closed_list.end())
+    if (closed_list[index].find(node) != closed_list[index].end())
     {
         delete node;
         return(0);
     }
-    closed_list.insert(node);
+    closed_list[index].insert(node);
     
     
     //  explore UP
     if (node->blank.i > 0 && node->direction != DOWN)
     {
-        if (bfs_add_node(node, UP))
+        if (bfs_add_node(node, UP, index))
             return (1);
     }
     //  explore DOWN
     if (node->blank.i < get_npuzzle_size() - 1 && node->direction != UP)
     {
-        if (bfs_add_node(node, DOWN))
+        if (bfs_add_node(node, DOWN, index))
             return (1);
     }
     //  explore LEFT
     if (node->blank.j > 0 && node->direction != RIGHT)
     {
-        if (bfs_add_node(node, LEFT))
+        if (bfs_add_node(node, LEFT, index))
             return (1);
     }
     //  explore RIGHT
     if (node->blank.j < get_npuzzle_size() - 1 && node->direction != LEFT)
     {
-        if (bfs_add_node(node, RIGHT))
+        if (bfs_add_node(node, RIGHT, index))
             return (1);
     }
         
     return (0);
 }
     
-int Database::bfs_add_node(t_node *node, int direction)
+int Database::bfs_add_node(t_node *node, int direction, int index)
 {
     t_node *new_node;
     try
@@ -392,7 +436,7 @@ int Database::bfs_add_node(t_node *node, int direction)
     std::swap(new_node->map[node->blank.i][node->blank.j], new_node->map[new_node->blank.i][new_node->blank.j]);
     new_node->cost = node->cost + 1;
     new_node->direction = direction;
-    queue.push(new_node);
+    queue[index].push(new_node);
     
     return(0);
 }
@@ -401,18 +445,18 @@ int Database::create_pattern_database_no_blank_tile(int index)
 {
     // create patter_database from closed_list without blank for space optimisation
     t_node  *node; 
-    for (auto it = closed_list.begin(); it != closed_list.end(); ++it)
+    for (auto it = closed_list[index].begin(); it != closed_list[index].end(); ++it)
     {
         node = *it;
-        auto    match = pattern_database.find(node);
+        auto    match = pattern_database[index].find(node);
         
-        if (match != pattern_database.end())
+        if (match != pattern_database[index].end())
         {
             if ((*it)->cost < (*match)->cost)
                 (*match)->cost = (*it)->cost;
         }
         else
-            pattern_database.insert(node);
+            pattern_database[index].insert(node);
     }
 
 
@@ -427,7 +471,7 @@ int Database::create_pattern_database_no_blank_tile(int index)
     }
 
 
-    for (auto it = pattern_database.begin(); it != pattern_database.end(); ++it)
+    for (auto it = pattern_database[index].begin(); it != pattern_database[index].end(); ++it)
         fs << node_to_string(*it, index) << std::endl;
 
     fs.close();

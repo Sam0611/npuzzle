@@ -10,7 +10,6 @@
 #include <new>
 #include <algorithm>    // std::find
 #include <chrono>       // timer
-#include <ctime>        // for test purposes
 #include "Database.hpp"
 #include <stdio.h>
 
