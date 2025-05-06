@@ -28,12 +28,12 @@ Database::~Database(void)
 
 void Database::set_npuzzle_size(int n)
 {
-    npuzzle_size = n;
+    _npuzzle_size = n;
 }
 
 int Database::get_npuzzle_size(void)
 {
-    return(npuzzle_size);
+    return(_npuzzle_size);
 }
 
 int Database::algo(int size)
@@ -60,7 +60,7 @@ int Database::algo(int size)
     {
         //make "max_threads" or "remaining databases" threads
         int i = 0;
-        while (loop && i < max_threads)
+        while (loop && i < _max_threads)
         {
             loop--;
             i++;
@@ -105,14 +105,14 @@ int Database::define_patterns(void)
         {
             std::vector<int> pattern1 = {1, 2, 3};
             patterns.push_back(pattern1);
-            max_threads = patterns.size();
+            _max_threads = patterns.size();
             break;
         }
         case 3:
         {
             std::vector<int>    pattern1 = {1, 2, 3, 4, 5, 6, 7, 8};
             patterns.push_back(pattern1);
-            max_threads = patterns.size();
+            _max_threads = patterns.size();
             break;
         }
         case 4:
@@ -123,7 +123,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern1);
             patterns.push_back(pattern2);
             patterns.push_back(pattern3);
-            max_threads = patterns.size();
+            _max_threads = patterns.size();
             break;
         }
         case 5:
@@ -140,7 +140,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern4);
             patterns.push_back(pattern5);
             patterns.push_back(pattern6);
-            max_threads = patterns.size();
+            _max_threads = patterns.size();
             break;
         }
         case 6:
@@ -169,7 +169,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern10);
             patterns.push_back(pattern11);
             patterns.push_back(pattern12);
-            max_threads = patterns.size();
+            _max_threads = patterns.size();
             break;
         }
         case 7:
@@ -206,7 +206,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern14);
             patterns.push_back(pattern15);
             patterns.push_back(pattern16);
-            max_threads = 4;
+            _max_threads = 4;
             break;
         }
         case 8:
@@ -253,7 +253,7 @@ int Database::define_patterns(void)
             patterns.push_back(pattern19);
             patterns.push_back(pattern20);
             patterns.push_back(pattern21);
-            max_threads = 1;
+            _max_threads = 1;
             break;
         }
         default:

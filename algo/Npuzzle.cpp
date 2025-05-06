@@ -74,7 +74,7 @@ bool    Npuzzle::is_solvable(void)
     {
         for (int j = 0; j < _size; j++)
         {
-            values.push_back(_map[i][j]);
+            values.push_back(map[i][j]);
         }
     }
 
@@ -93,7 +93,7 @@ bool    Npuzzle::is_solvable(void)
     // if N is even, puzzle instance is solvable if
     //  the blank is on odd row and number of inversions is odd
     //  the blank is on even row and number of inversions is even
-    // if N is odd,then puzzle instance is solvable if number of inversions is odd in the input state
+    // if N is odd,then puzzle instance is solvable if number of inversions is even in the input state
     if (_size % 2 == 0) // N is even
     {
         int row, col;
@@ -120,14 +120,14 @@ int    Npuzzle::get_map_blank(int &i, int &j)
         j = 0;
         while (j < _size)
         {
-            if (_map[i][j] == 0)
-                return  (0);
+            if (map[i][j] == 0)
+                return (0);
             j++;
         }
         i++;
     }
     std::cerr << "Map has no hole !" << std::endl;
-    return(1);
+    return (1);
 }
 
 int     Npuzzle::a_star_algorithm(void)
@@ -144,12 +144,12 @@ int     Npuzzle::a_star_algorithm(void)
         return (1);
     }
     
-    beginning->value = _heuristic_func(_map, *this);
+    beginning->value = heuristic_func(map, *this);
     beginning->direction = BEGIN;
     beginning->cost = 0;
     if (get_map_blank(beginning->blank.i, beginning->blank.j))
         return (1);
-    beginning->map = _map;
+    beginning->map = map;
     beginning->previous = NULL;
 
 
@@ -158,7 +158,7 @@ int     Npuzzle::a_star_algorithm(void)
 
 
     //  check if map already complete
-    if (finished(_heuristic_func(_map, *this), beginning))
+    if (finished(heuristic_func(map, *this), beginning))
         return(0);
 
     while (!get_map_finished())
@@ -225,7 +225,7 @@ int    Npuzzle::add_possibility(t_movement *parent_movement, int direction)
     movement_assign_map_and_blank(movement, parent_movement);
     movement->previous = parent_movement;
 
-    int heuristic = _heuristic_func(movement->map, *this);
+    int heuristic = heuristic_func(movement->map, *this);
     movement->value = heuristic + movement->cost;
 
 

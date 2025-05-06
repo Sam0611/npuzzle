@@ -149,8 +149,8 @@ private:
 
 
     //variables
-    int npuzzle_size;
-    int max_threads;
+    int _npuzzle_size;
+    int _max_threads;
 };
 
 

@@ -19,7 +19,7 @@
 class Database;
 class Npuzzle;
 
-typedef int (*heuristic_func)(std::vector< std::vector<int> > &, Npuzzle &npuzzle);
+typedef int (*heuristic_func)(std::vector< std::vector<int> > &map, Npuzzle &npuzzle);
 
 //  heuristic function
 #define MISPLACED_TILE "1"
@@ -111,14 +111,14 @@ class Npuzzle
         static void    set_coordinates(int to_check, int &x, int &y, std::vector< std::vector<int> > &map);
 
 
-        std::vector< std::vector<int> > _map;
+        std::vector< std::vector<int> > map;
         std::priority_queue<t_movement*, std::vector<t_movement*>, cmp_priority_queue>               possibilities;
         // std::list<t_movement*>               possibilities;
         std::unordered_set<t_movement*, hash_movement, cmp_movement>  all_movements;
         std::queue<t_movement*>  duplicates;
 
         Database    database;
-        heuristic_func  _heuristic_func;
+        heuristic_func  heuristic_func;
 
     private:
         int     get_map_blank(int &i, int &j);
