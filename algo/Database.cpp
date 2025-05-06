@@ -84,11 +84,8 @@ int Database::algo(int size)
 
 int Database::lunch_create_pattern_database_in_threads(Database &database, int index)
 {
-    for (size_t i = 0; i < database.patterns.size(); i++)
-    {
-        if (database.create_pattern_database(index))
-            return(1);
-    }
+    if (database.create_pattern_database(index))
+        return(1);
     return(0);
 }
     
