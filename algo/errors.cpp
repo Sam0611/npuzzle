@@ -27,7 +27,7 @@ int err_npuzzle_size_syntax(std::string &buffer, int i)
 {
     if (buffer[i] && !isdigit(buffer[i]))
     {
-        std::cerr << "Npuzzle size syntax invalid" << std::endl;
+        std::cerr << "Npuzzle \"map\" or \"size syntax\" invalid" << std::endl;
         return(1);
     }
     return(0);
